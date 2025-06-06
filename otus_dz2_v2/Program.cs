@@ -40,12 +40,12 @@ namespace otus_dz2_v2
                         "/help - краткое описание доступных комманд\n" +
                         "/info - информация о версии и дате запуска кода\n" +
                         "/exit - завершение работы\n" +
-                        "/echo + слово/фраза - возврат введенного пользователем слова, доступно только после выполнения /start");
-                       /* "/addtask - добавить задачу в сптсок дел\n" +
+                        "/echo + слово/фраза - возврат введенного пользователем слова, доступно только после выполнения /start\n"+
+                       "/addtask - добавить задачу в сптсок дел\n" +
                         "/showtasks - показать ранее добавленные задачи\n" +
-                        "/removetask - удалить задачу");*/
+                        "/removetask - удалить задачу");
                         break;
-
+ 
                     case "/info":
                         Console.WriteLine($"{MyClass.UserName} {Vers} {localDate}");
                         break;
@@ -58,16 +58,16 @@ namespace otus_dz2_v2
                     case string Contains when UserCommand.Contains("/echo") && string.IsNullOrEmpty(MyClass.UserName) == true:
                         Console.WriteLine("Сначала запустите команду /start");
                         break;
-                        /*
+                        
                     case "/addtask":
-                        Console.WriteLine($"{MyClass.UserName} Пожалуйста, введите описание задачи. Для выхода  из команды введите символ /");
+                        Console.WriteLine($"{MyClass.UserName} Пожалуйста, введите описание задачи");
                         string UserTask = Console.ReadLine();
-                        while (UserTask != "/")
-                        {
+                       // while (UserTask != "/")
+                       // {
                             ToDoList.Add(UserTask);
-                            Console.WriteLine($"{MyClass.UserName} задача {UserTask} добавлена, введите след. задачу");
-                            UserTask = Console.ReadLine();
-                        }
+                            Console.WriteLine($"{MyClass.UserName} задача {UserTask} добавлена, введите след. команду");
+                           // UserTask = Console.ReadLine();
+                       // }
                         break;
 
                     case "/showtasks":
@@ -114,7 +114,7 @@ namespace otus_dz2_v2
                         }
                         
                             break;
-                        */
+                        
                     default:
                         Console.WriteLine($"{MyClass.UserName} введите клрректную команду");
                         break;
