@@ -13,7 +13,7 @@ namespace otus_dz2_v2
             List<string> ToDoList = new List<string>();
             string Vers = "Версия 1.2";
             DateTime localDate= DateTime.Now;
-            Console.WriteLine("Для начала работы введите одну из следующих комманд: /strat, /help, /info, /exit");
+            Console.WriteLine("Для начала работы введите одну из следующих комманд: /strat, /help, /info, /addtask, /showtasks, /removetask, /exit");
             string CmdEcho = "/echo";
 
             string UserCommand=Console.ReadLine();
