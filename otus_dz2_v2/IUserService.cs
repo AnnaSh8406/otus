@@ -31,9 +31,10 @@ namespace otus_dz2_v2
             ConsoleBotClient botClient = new ConsoleBotClient();   
             Update update = new Update();
              
-             botClient.SendMessage(update.Message.Chat, $"{update.Message.Id}");
-            return ;
-
+            // botClient.SendMessage(update.Message.Chat, $"{update.Message.Id}");
+              telegramUserId= update.Message.Id;
+             
+            return telegramUserId;
         }
         /*
         void IUserService.Myclass2()
