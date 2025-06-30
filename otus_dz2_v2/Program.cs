@@ -135,37 +135,37 @@ namespace otus_dz2_v2
                 }
             }
             */
- /*
-             int taskLengthLimit = 0;
-            bool validInputLen = false;
-           
-            while (!validInputLen)
-            {
-                validInputLen = true;
-                Console.WriteLine("Введите максимально допустимое количество символов от 1 до 100 шт");
-                try
-                {
-                    taskLengthLimit = Convert.ToInt32(Console.ReadLine());
-                    if (!NumberValidator.ParseAndValidateIntLen(taskLengthLimit, min, max))
-                    {
-                        throw new ArgumentException(  "Введите максимально допустимое длину задач от 1 до 100 символов");
-                    }
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-                    Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                    Console.WriteLine($"InnerException: {ex.InnerException}");
-                    validInputLen = false;
-                }
-                catch (FormatException ex)
-                {
-                    Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-                    Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                    validInputLen = false;
-                }
-            }
-            */
+            /*
+                        int taskLengthLimit = 0;
+                       bool validInputLen = false;
+
+                       while (!validInputLen)
+                       {
+                           validInputLen = true;
+                           Console.WriteLine("Введите максимально допустимое количество символов от 1 до 100 шт");
+                           try
+                           {
+                               taskLengthLimit = Convert.ToInt32(Console.ReadLine());
+                               if (!NumberValidator.ParseAndValidateIntLen(taskLengthLimit, min, max))
+                               {
+                                   throw new ArgumentException(  "Введите максимально допустимое длину задач от 1 до 100 символов");
+                               }
+                           }
+                           catch (ArgumentException ex)
+                           {
+                               Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+                               Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                               Console.WriteLine($"InnerException: {ex.InnerException}");
+                               validInputLen = false;
+                           }
+                           catch (FormatException ex)
+                           {
+                               Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+                               Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                               validInputLen = false;
+                           }
+                       }
+                       */
 
             /*
                 Console.WriteLine("Для начала работы введите одну из следующих комманд: /strat, /help, /info, /addtask, /showtasks, /removetask, /exit");
@@ -188,13 +188,19 @@ namespace otus_dz2_v2
 
             /* botClient.StartReceiving(Message);
              UpdateHandler.ReferenceEquals(handler, botClient);*/
+            //Console.WriteLine("Для начала работы введите одну из следующих комманд: /strat, /help, /info, /addtask, /showtasks, /removetask, /exit");
 
             var botClient = new ConsoleBotClient();
+
+            // var update = new Update();
              
+            //botClient.SendMessage(update.Message.Chat, "Для начала работыt");
             
             IUpdateHandler t=new UpdateHandler();
+            
             botClient.StartReceiving( t );
-             
+           //t.HandleUpdateAsync(update.Message.Chat, "Для начала работыt");
+           
 
 
             //UpdateHandler u =new UpdateHandler();

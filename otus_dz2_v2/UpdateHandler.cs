@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Otus.ToDoList.ConsoleBot.Types;
 using Otus.ToDoList.ConsoleBot;
-using static otus_dz2_v2.Program;
-
+using Otus.ToDoList.ConsoleBot.Types;
+using static otus_dz2_v2.Program; 
 namespace otus_dz2_v2
 { 
     internal class UpdateHandler : IUpdateHandler
@@ -15,6 +14,13 @@ namespace otus_dz2_v2
         public void HandleUpdateAsync(ITelegramBotClient botClient, Update update)
         {
             botClient.SendMessage(update.Message.Chat, $"Получил '{update.Message.Text}'");
+
+
+            // var update = new Update();
+
+            //botClient.SendMessage(update.Message.Chat, "Для начала работыt");
+             
+            
 
 
             if (update.Message != null)
@@ -32,6 +38,22 @@ namespace otus_dz2_v2
                         "/removetask - удалить задачу");
                         break;
 
+                    case "/start":
+                       // botClient.SendMessage(update.Message.Chat, $"Получил '{update.Message.From.Id}");
+                       // botClient.SendMessage(update.Message.Chat, $"Получил '{update.Message.From.Username}");
+                        // ToDoUser t = new ToDoUser();
+                        //ToDoUser newTodoUser = new ToDoUser();
+                        //newTodoUser.TelegramUserId = update.Message.From.Id;
+                        IUserService newUs = new ToDoUser();
+                        newUs.GetUser(update.Message.From.Id);
+                           
+
+
+
+
+
+                        break;
+
                     default:
                         Console.WriteLine(" введите корректную команду");
                         break;
@@ -39,15 +61,7 @@ namespace otus_dz2_v2
                 }
             }
         }
-        public void ToDoUser(Guid UserId, long TelegramUserId, string TelegramUserName, DateTime RegisteredAt)
-        {
-
-            IUserService u = new UserService();
-             u.GetUser(telegramUserId);
-            // u.RegisterUser(TelegramUserId.)
-           
-
-        }
+      
     }
 
 

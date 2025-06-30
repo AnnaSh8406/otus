@@ -2,21 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml.Linq;
-using Otus.ToDoList.ConsoleBot;
+using System.Threading.Tasks;
 using Otus.ToDoList.ConsoleBot.Types;
+using Otus.ToDoList.ConsoleBot;
+using static otus_dz2_v2.Program;
 
 namespace otus_dz2_v2
 {
-    public interface IUserService
-    {
-
-         ToDoUser RegisterUser(long telegramUserId, string telegramUserName);
-        ToDoUser? GetUser(long telegramUserId);
-
-       
-
-    }
 
     public class ToDoUser : IUserService
 
@@ -27,7 +19,7 @@ namespace otus_dz2_v2
         public long TelegramUserId { get; set; }
         public string TelegramUserName { get; set; }
         public DateTime RegistereAt { get; set; }
-
+       
         /* public ToDoUser(long telegramUserId, string telegramUserName)
         { 
         TelegramUserId = telegramUserId;

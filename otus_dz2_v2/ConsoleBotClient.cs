@@ -1,5 +1,5 @@
-﻿using Otus.ToDoList.ConsoleBot.Types;
-
+﻿
+using Otus.ToDoList.ConsoleBot.Types;
 namespace Otus.ToDoList.ConsoleBot;
 /// <summary>
 /// Консольный клиент для бота
