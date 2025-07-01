@@ -15,13 +15,15 @@ namespace otus_dz2_v2
         {
             botClient.SendMessage(update.Message.Chat, $"Получил '{update.Message.Text}'");
 
+            var useri = update.Message.From.Id;
+            IUserService newToDoUser = new ToDoUser();
+            ToDoUser tdUs = new ToDoUser();
+            tdUs.TelegramUserId = 2222;
 
-            // var update = new Update();
-
-            //botClient.SendMessage(update.Message.Chat, "Для начала работыt");
              
+            List<ToDoItem> tdList = new List<ToDoItem>();
+           
             
-
 
             if (update.Message != null)
             {
@@ -39,21 +41,41 @@ namespace otus_dz2_v2
                         break;
 
                     case "/start":
-                       // botClient.SendMessage(update.Message.Chat, $"Получил '{update.Message.From.Id}");
-                       // botClient.SendMessage(update.Message.Chat, $"Получил '{update.Message.From.Username}");
+                        // botClient.SendMessage(update.Message.Chat, $"Получил '{update.Message.From.Id}");
+                        // botClient.SendMessage(update.Message.Chat, $"Получил '{update.Message.From.Username}");
                         // ToDoUser t = new ToDoUser();
                         //ToDoUser newTodoUser = new ToDoUser();
-                        //newTodoUser.TelegramUserId = update.Message.From.Id;
-                        IUserService newUs = new ToDoUser();
-                        newUs.GetUser(update.Message.From.Id);
-                           
+                        // //newTodoUser.TelegramUserId = update.Message.From.Id;
+                        // IUserService newUs = new ToDoUser();
+                        //newUs.GetUser(update.Message.From.Id);
+                        tdUs = newToDoUser.RegisterUser(update.Message.From.Id, update.Message.From.Username);
 
-
-
+                        tdUs.RegistereAt=DateTime.Now;
 
 
                         break;
 
+                    case string Contains when update.Message.Text.Contains("/addtask"):
+                        string addtask = "/addtask";
+                        string ss=update.Message.Text;
+                        ss=ss.Remove(0,addtask.Length);
+                        ToDoUser toDoUser = new ToDoUser();
+                        toDoUser.UserId = Guid.NewGuid();
+                        toDoUser.TelegramUserName = update.Message.From.Username;
+                        Guid dd= Guid.NewGuid();
+                        //Guid UserId= Guid.NewGuid();
+                        //ToDoItem it = new ToDoItem(Guid.NewGuid(), ss);
+                        //ToDoItem t = new ToDoItem(Guid.NewGuid(), ss);
+                        TaskU taskU = new TaskU();
+                        taskU.AddTask(tdUs, ss);
+
+                       // Console.WriteLine($"задание {it.Name}, состояние {it.State}");
+                        //it.Complete();
+
+                            //{ ID=1,Name=ss,CreatedAt= DateTime.Now; };
+
+
+                         break;
                     default:
                         Console.WriteLine(" введите корректную команду");
                         break;
@@ -61,7 +83,30 @@ namespace otus_dz2_v2
                 }
             }
         }
-      
+
+        private readonly IToDoService _toDoService;
+        public UpdateHandler(IToDoService toDoService  )
+        {
+            _toDoService = toDoService;
+        }
+
+        public void HandlerAddTask(ToDoUser user, string taskName)
+        {
+            try
+            {
+                
+
+                _toDoService.Add(user, taskName);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+        public void HandlerRemoveTask(Guid taskId)
+        { 
+        _toDoService.Delete(taskId);
+        }
     }
 
 

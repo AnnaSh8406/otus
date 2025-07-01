@@ -8,6 +8,7 @@ using Otus.ToDoList.ConsoleBot.Types;
 
 namespace otus_dz2_v2
 {
+    
     public interface IUserService
     {
 
@@ -17,13 +18,13 @@ namespace otus_dz2_v2
        
 
     }
-
+    
     public class ToDoUser : IUserService
 
     {
         public Guid UserId { get; set; }
 
-
+        
         public long TelegramUserId { get; set; }
         public string TelegramUserName { get; set; }
         public DateTime RegistereAt { get; set; }
@@ -43,30 +44,30 @@ namespace otus_dz2_v2
 
             //botClient.SendMessage(update.Message.Chat, $"{update.Message.Id}");
             // telegramUserId= update.Message.Id;
-            telegramUserId = telegramUserId++;
+            TelegramUserId = telegramUserId++;
             ConsoleBotClient botClient = new ConsoleBotClient();
             Update update = new Update();
             ToDoUser newTodoUser = new ToDoUser();
             newTodoUser.TelegramUserId = telegramUserId;
             //telegramUserId = update.Message.From.Id;
-            return new ToDoUser();
+            return newTodoUser;
         }
 
 
         ToDoUser IUserService.RegisterUser(long telegramUserId, string telegramUserName)
         {
             //  throw new NotImplementedException();
-            telegramUserId = telegramUserId++;
+            TelegramUserId = telegramUserId++;
 
             ConsoleBotClient botClient = new ConsoleBotClient();
             Update update = new Update();
             ToDoUser newTodoUser = new ToDoUser();
             newTodoUser.TelegramUserId = telegramUserId;
             newTodoUser.TelegramUserName = telegramUserName;
-            return new ToDoUser();
+            return newTodoUser;
         }
 
-
+        
 
     }
 }
