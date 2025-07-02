@@ -19,8 +19,14 @@ namespace otus_dz2_v2
             IUserService newToDoUser = new ToDoUser();
             ToDoUser tdUs = new ToDoUser();
             tdUs.TelegramUserId = 2222;
+            IToDoService toDoService = new ToDoService();
+             ToDoService tdUsService = new ToDoService();
+            
+            var user= new ToDoUser ();
+           // ToDoItem tdItem = new ToDoItem();
 
-             
+
+
             List<ToDoItem> tdList = new List<ToDoItem>();
            
             
@@ -51,7 +57,7 @@ namespace otus_dz2_v2
                         tdUs = newToDoUser.RegisterUser(update.Message.From.Id, update.Message.From.Username);
 
                         tdUs.RegistereAt=DateTime.Now;
-
+                        tdUs.UserId= Guid.NewGuid();
 
                         break;
 
@@ -62,13 +68,14 @@ namespace otus_dz2_v2
                         ToDoUser toDoUser = new ToDoUser();
                         toDoUser.UserId = Guid.NewGuid();
                         toDoUser.TelegramUserName = update.Message.From.Username;
-                        Guid dd= Guid.NewGuid();
+                        //Guid dd= Guid.NewGuid();
+
                         //Guid UserId= Guid.NewGuid();
                         //ToDoItem it = new ToDoItem(Guid.NewGuid(), ss);
                         //ToDoItem t = new ToDoItem(Guid.NewGuid(), ss);
                         TaskU taskU = new TaskU();
                         taskU.AddTask(tdUs, ss);
-
+                        
                        // Console.WriteLine($"задание {it.Name}, состояние {it.State}");
                         //it.Complete();
 
@@ -76,6 +83,15 @@ namespace otus_dz2_v2
 
 
                          break;
+
+                    case "/showtasks":
+                        var taskList = tdUsService.GetActiveByUserId(user.UserId);
+                        break;
+                    case "/removetask":
+                        var taskRemove = tdUsService.GetActiveByUserId(user.UserId).ToList();
+                        int taskIndex  = int.Parse(Console.ReadLine());
+                        tdUsService.Delete(taskRemove[taskIndex-1].ID);
+                        break;
                     default:
                         Console.WriteLine(" введите корректную команду");
                         break;
@@ -90,13 +106,13 @@ namespace otus_dz2_v2
             _toDoService = toDoService;
         }
 
-        public void HandlerAddTask(ToDoUser user, string taskName)
+        public void HandlerAddTask(ToDoUser userId, string taskName)
         {
             try
             {
                 
 
-                _toDoService.Add(user, taskName);
+                _toDoService.Add(userId, taskName);
             }
             catch (Exception e)
             {

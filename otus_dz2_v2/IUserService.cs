@@ -22,9 +22,10 @@ namespace otus_dz2_v2
     public class ToDoUser : IUserService
 
     {
-        public Guid UserId { get; set; }
-
         
+        public Guid UserId { get; set; }= Guid.NewGuid();
+
+
         public long TelegramUserId { get; set; }
         public string TelegramUserName { get; set; }
         public DateTime RegistereAt { get; set; }
@@ -49,6 +50,8 @@ namespace otus_dz2_v2
             Update update = new Update();
             ToDoUser newTodoUser = new ToDoUser();
             newTodoUser.TelegramUserId = telegramUserId;
+
+            UserId = Guid.NewGuid();
             //telegramUserId = update.Message.From.Id;
             return newTodoUser;
         }
@@ -59,14 +62,17 @@ namespace otus_dz2_v2
             //  throw new NotImplementedException();
             TelegramUserId = telegramUserId++;
 
+            UserId= Guid.NewGuid();
             ConsoleBotClient botClient = new ConsoleBotClient();
             Update update = new Update();
             ToDoUser newTodoUser = new ToDoUser();
             newTodoUser.TelegramUserId = telegramUserId;
             newTodoUser.TelegramUserName = telegramUserName;
+            newTodoUser.UserId=UserId;
             return newTodoUser;
         }
 
+        
         
 
     }

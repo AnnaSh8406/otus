@@ -11,7 +11,7 @@ namespace otus_dz2_v2
         IReadOnlyList<ToDoItem> GetAllByUserId(Guid userId);
         //Возвращает ToDoItem для UserId со статусом Active
         IReadOnlyList<ToDoItem> GetActiveByUserId(Guid userId);
-        ToDoItem Add(ToDoUser user, string name);
+        ToDoItem Add(ToDoUser userId, string name);
         void MarkCompleted(Guid id);
         void Delete(Guid id);
     }
@@ -20,7 +20,8 @@ namespace otus_dz2_v2
     private readonly List<ToDoItem> _toDoItems = new List<ToDoItem>();
         public const int MaxCount = 10;
         public const int MaxTaskLenght = 10;
-
+        
+         
         public IReadOnlyList<ToDoItem> GetAllByUserId(Guid userId)
         {
             return _toDoItems.Where(_items => _items.UserId == userId).ToList().AsReadOnly();
@@ -40,10 +41,21 @@ namespace otus_dz2_v2
             {
                 throw new Exception("Превышено количество символов в задаче");
             }
-            if (_toDoItems.Any(item => item.Name == name && item.UserID == user.UserId && item.State == ToDoItemState.Activ))
+            if (_toDoItems.Any(item => item.Name == name && item.UserId == user.UserId && item.State == ToDoItemState.Activ))
             {
                 throw new Exception("Такая задача уже существует");
             }
+            Guid id = Guid.NewGuid();
+            var newItem = new ToDoItem(id,name)
+            {
+                UserId = user.UserId,
+                Name = name,
+                State = ToDoItemState.Activ,
+                ID = Guid.NewGuid()
+            };
+            _toDoItems.Add(newItem);
+            return newItem;
+
         }
 
         public void MarkCompleted(Guid id) 
