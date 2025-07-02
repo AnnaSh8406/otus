@@ -8,7 +8,7 @@ using Otus.ToDoList.ConsoleBot.Types;
 using static otus_dz2_v2.Program; 
 namespace otus_dz2_v2
 { 
-    internal class UpdateHandler : IUpdateHandler
+    public class UpdateHandler : IUpdateHandler
     {
         
         public void HandleUpdateAsync(ITelegramBotClient botClient, Update update)
@@ -68,13 +68,17 @@ namespace otus_dz2_v2
                         ToDoUser toDoUser = new ToDoUser();
                         toDoUser.UserId = Guid.NewGuid();
                         toDoUser.TelegramUserName = update.Message.From.Username;
+                        var taskName= toDoUser.TelegramUserName;
                         //Guid dd= Guid.NewGuid();
-
+                        var chatId=update.Message.Chat;
                         //Guid UserId= Guid.NewGuid();
                         //ToDoItem it = new ToDoItem(Guid.NewGuid(), ss);
                         //ToDoItem t = new ToDoItem(Guid.NewGuid(), ss);
                         TaskU taskU = new TaskU();
                         taskU.AddTask(tdUs, ss);
+
+                        var newItem = toDoService.Add(user, taskName);
+                        botClient.SendMessage(chatId, newItem.Name);
                         
                        // Console.WriteLine($"задание {it.Name}, состояние {it.State}");
                         //it.Complete();
@@ -85,7 +89,11 @@ namespace otus_dz2_v2
                          break;
 
                     case "/showtasks":
-                        var taskList = tdUsService.GetActiveByUserId(user.UserId);
+
+                         var activeTasks = tdUsService.GetActiveByUserId(user.UserId);
+                        var taskList = activeTasks.Select((task, index) => $"{index + 1},{task.Name}");
+                        //botClient.SendMessage(chatId, taskList);
+                        Console.WriteLine(taskList);
                         break;
                     case "/removetask":
                         var taskRemove = tdUsService.GetActiveByUserId(user.UserId).ToList();
@@ -104,6 +112,10 @@ namespace otus_dz2_v2
         public UpdateHandler(IToDoService toDoService  )
         {
             _toDoService = toDoService;
+        }
+
+        public UpdateHandler()
+        {
         }
 
         public void HandlerAddTask(ToDoUser userId, string taskName)

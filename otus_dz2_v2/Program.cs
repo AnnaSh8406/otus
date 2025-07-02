@@ -185,9 +185,9 @@ namespace otus_dz2_v2
              Console.WriteLine($"InnerException: {ex.InnerException}");
          }
      */
-
-            /* botClient.StartReceiving(Message);
-             UpdateHandler.ReferenceEquals(handler, botClient);*/
+//
+            //botClient.StartReceiving(Message);
+            // UpdateHandler.ReferenceEquals(handler, botClient);
             //Console.WriteLine("Для начала работы введите одну из следующих комманд: /strat, /help, /info, /addtask, /showtasks, /removetask, /exit");
 
             var botClient = new ConsoleBotClient();

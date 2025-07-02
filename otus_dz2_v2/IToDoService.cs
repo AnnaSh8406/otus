@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace otus_dz2_v2
 {
-    public class IToDoService
+    public interface IToDoService
     {
         IReadOnlyList<ToDoItem> GetAllByUserId(Guid userId);
         //Возвращает ToDoItem для UserId со статусом Active
