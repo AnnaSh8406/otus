@@ -12,8 +12,15 @@ namespace otus_dz2_v2
     public class ToDoItem
 
     {
+        private object id;
 
-        public Guid ID { get; set; } = Guid.NewGuid();
+        public ToDoItem(Guid id, string name)
+        {
+            this.id = id;
+            Name = name;
+        }
+
+        public Guid ID { get; set; } /*= Guid.NewGuid();*/
         public ToDoUser User { get; set; }
         public string Name { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -21,51 +28,52 @@ namespace otus_dz2_v2
         public DateTime? StartChangeAt { get; set; }
         public Guid UserId { get; internal set; }
 
-        public ToDoItem(Guid id, string name)
-        {
-            ToDoUser user = new ToDoUser();
+        /*  public ToDoItem(Guid id, string name)
+          {
+              ToDoUser user = new ToDoUser();
 
-            user.UserId = Guid.NewGuid(); 
-            ID = id;
+              user.UserId = Guid.NewGuid(); 
+              ID = id;
 
-            Name = name;
-            CreatedAt = DateTime.Now;
-            State = ToDoItemState.Activ;
-            StartChangeAt = null;
-        }
-        public void Complete()
-        {
-            State = ToDoItemState.Complited;
-            StartChangeAt = DateTime.Now;
+              Name = name;
+              CreatedAt = DateTime.Now;
+              State = ToDoItemState.Activ;
+              StartChangeAt = null;
+          }
+          public void Complete()
+          {
+              State = ToDoItemState.Complited;
+              StartChangeAt = DateTime.Now;
 
-        }
+          }
 
+
+      }
+
+      public class TaskU
+
+      {
+          private List<ToDoItem> task = new List<ToDoItem>();
+
+          public void AddTask(ToDoUser userId, string name)
+          {
+              var UserId = userId;
+
+              Guid id = Guid.NewGuid();
+              ToDoItem newTask = new ToDoItem(id, name)
+              {
+                  ID = Guid.NewGuid(),
+
+                  Name = name,
+                  CreatedAt = DateTime.Now,
+                  State = ToDoItemState.Activ,
+                  StartChangeAt = null
+              };
+              task.Add(newTask);
+              Console.WriteLine("Задача добавлена");
+          }
+
+      }*/
 
     }
-
-    public class TaskU
-
-    {
-        private List<ToDoItem> task = new List<ToDoItem>();
-
-        public void AddTask(ToDoUser userId, string name)
-        {
-            var UserId = userId;
-
-            Guid id = Guid.NewGuid();
-            ToDoItem newTask = new ToDoItem(id, name)
-            {
-                ID = Guid.NewGuid(),
-
-                Name = name,
-                CreatedAt = DateTime.Now,
-                State = ToDoItemState.Activ,
-                StartChangeAt = null
-            };
-            task.Add(newTask);
-            Console.WriteLine("Задача добавлена");
-        }
-
-    }
-
 }

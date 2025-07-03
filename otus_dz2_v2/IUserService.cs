@@ -23,7 +23,7 @@ namespace otus_dz2_v2
 
     {
         
-        public Guid UserId { get; set; }= Guid.NewGuid();
+        public Guid UserId { get; set; }/*= Guid.NewGuid();*/
 
 
         public long TelegramUserId { get; set; }
@@ -69,6 +69,7 @@ namespace otus_dz2_v2
             newTodoUser.TelegramUserId = telegramUserId;
             newTodoUser.TelegramUserName = telegramUserName;
             newTodoUser.UserId=UserId;
+            newTodoUser.RegistereAt = DateTime.Now;
             return newTodoUser;
         }
 

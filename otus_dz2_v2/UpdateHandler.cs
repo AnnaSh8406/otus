@@ -59,6 +59,8 @@ namespace otus_dz2_v2
                         tdUs.RegistereAt=DateTime.Now;
                         tdUs.UserId= Guid.NewGuid();
 
+                        Console.WriteLine($"Пользователь {tdUs.TelegramUserName}, состояние {tdUs.UserId}");
+
                         break;
 
                     case string Contains when update.Message.Text.Contains("/addtask"):
@@ -74,13 +76,18 @@ namespace otus_dz2_v2
                         //Guid UserId= Guid.NewGuid();
                         //ToDoItem it = new ToDoItem(Guid.NewGuid(), ss);
                         //ToDoItem t = new ToDoItem(Guid.NewGuid(), ss);
-                        TaskU taskU = new TaskU();
+
+                        /*TaskU taskU = new TaskU();
                         taskU.AddTask(tdUs, ss);
 
                         var newItem = toDoService.Add(user, taskName);
                         botClient.SendMessage(chatId, newItem.Name);
-                        
-                       // Console.WriteLine($"задание {it.Name}, состояние {it.State}");
+                        */
+                        var newItem = toDoService.Add(user, ss);
+
+
+
+                       Console.WriteLine($"задание {newItem.Name}, состояние {newItem.State}");
                         //it.Complete();
 
                             //{ ID=1,Name=ss,CreatedAt= DateTime.Now; };
@@ -92,8 +99,13 @@ namespace otus_dz2_v2
 
                          var activeTasks = tdUsService.GetActiveByUserId(user.UserId);
                         var taskList = activeTasks.Select((task, index) => $"{index + 1},{task.Name}");
-                        //botClient.SendMessage(chatId, taskList);
-                        Console.WriteLine(taskList);
+
+                        // botClient.SendMessage(chatId, taskList);
+                        foreach (var item in taskList)
+                        {
+                            Console.WriteLine(item);
+                        }
+                        //Console.WriteLine(taskList);
                         break;
                     case "/removetask":
                         var taskRemove = tdUsService.GetActiveByUserId(user.UserId).ToList();
@@ -106,7 +118,7 @@ namespace otus_dz2_v2
 
                 }
             }
-        }
+        } 
 
         private readonly IToDoService _toDoService;
         public UpdateHandler(IToDoService toDoService  )
@@ -116,6 +128,7 @@ namespace otus_dz2_v2
 
         public UpdateHandler()
         {
+            
         }
 
         public void HandlerAddTask(ToDoUser userId, string taskName)

@@ -48,8 +48,10 @@ namespace otus_dz2_v2
             Guid id = Guid.NewGuid();
             var newItem = new ToDoItem(id,name)
             {
+                 
                 UserId = user.UserId,
                 Name = name,
+                CreatedAt = DateTime.Now,
                 State = ToDoItemState.Activ,
                 ID = Guid.NewGuid()
             };
