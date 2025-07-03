@@ -96,7 +96,7 @@ namespace otus_dz2_v2
                          break;
 
                     case "/showtasks":
-
+                          
                          var activeTasks = tdUsService.GetActiveByUserId(user.UserId);
                         var taskList = activeTasks.Select((task, index) => $"{index + 1},{task.Name}");
 
