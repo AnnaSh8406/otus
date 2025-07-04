@@ -11,6 +11,11 @@ namespace otus_dz2_v2
     public class UpdateHandler : IUpdateHandler
     {
         
+            IToDoService toDoService = new ToDoService();
+             ToDoService tdUsService = new ToDoService();
+        //int MaxCount = Convert.ToInt32(Console.ReadLine());
+        //int MaxTaskLenght = Convert.ToInt32(Console.ReadLine());
+
         public void HandleUpdateAsync(ITelegramBotClient botClient, Update update)
         {
             botClient.SendMessage(update.Message.Chat, $"Получил '{update.Message.Text}'");
@@ -18,10 +23,10 @@ namespace otus_dz2_v2
             var useri = update.Message.From.Id;
             IUserService newToDoUser = new ToDoUser();
             ToDoUser tdUs = new ToDoUser();
-            tdUs.TelegramUserId = 2222;
-            IToDoService toDoService = new ToDoService();
-             ToDoService tdUsService = new ToDoService();
+            //tdUs.TelegramUserId = 2222;
+
             
+
             var user= new ToDoUser ();
            // ToDoItem tdItem = new ToDoItem();
 
@@ -59,7 +64,7 @@ namespace otus_dz2_v2
                         tdUs.RegistereAt=DateTime.Now;
                         tdUs.UserId= Guid.NewGuid();
 
-                        Console.WriteLine($"Пользователь {tdUs.TelegramUserName}, состояние {tdUs.UserId}");
+                        Console.WriteLine($"Пользователь {tdUs.TelegramUserName}, id {tdUs.UserId} зарегестрирован");
 
                         break;
 
@@ -83,11 +88,17 @@ namespace otus_dz2_v2
                         var newItem = toDoService.Add(user, taskName);
                         botClient.SendMessage(chatId, newItem.Name);
                         */
-                        var newItem = toDoService.Add(user, ss);
+                        try
+                        {
+                            var newItem = toDoService.Add(user, ss);
 
 
 
-                       Console.WriteLine($"задание {newItem.Name}, состояние {newItem.State}");
+                            Console.WriteLine($"задание {newItem.Name}, состояние {newItem.State}");
+                        }
+                        catch (Exception ex) { 
+                            botClient.SendMessage(update.Message.Chat, ex.Message);
+                        }
                         //it.Complete();
 
                             //{ ID=1,Name=ss,CreatedAt= DateTime.Now; };
@@ -96,21 +107,82 @@ namespace otus_dz2_v2
                          break;
 
                     case "/showtasks":
-                          
-                         var activeTasks = tdUsService.GetActiveByUserId(user.UserId);
-                        var taskList = activeTasks.Select((task, index) => $"{index + 1},{task.Name}");
 
-                        // botClient.SendMessage(chatId, taskList);
-                        foreach (var item in taskList)
+                        ToDoService tdUsService = (ToDoService)toDoService;
+                        var activeTasks = tdUsService.GetActiveByUserId(user.UserId);
+                        if (activeTasks.Count > 0)
                         {
-                            Console.WriteLine(item);
+                            var taskList = activeTasks.Select((task, index) => $"{index + 1},{task.Name}");
+
+                            // botClient.SendMessage(chatId, taskList);
+                            foreach (var item in taskList)
+                            {
+                                Console.WriteLine(item);
+                            }
+                            //Console.WriteLine(taskList);
                         }
-                        //Console.WriteLine(taskList);
-                        break;
-                    case "/removetask":
+                        else 
+                        {
+                            throw new Exception("Нет активных задач");
+                        }
+                            break;
+
+                    case string Contains when update.Message.Text.Contains("/removetask"):
+                        tdUsService = (ToDoService)toDoService;
+
+                        string removetask = "/removetask";
+
+                        var rs = update.Message.Text;
+                        rs = rs.Remove(0, removetask.Length);
+                        rs=  rs.Trim();
+                        int ii;
+                        ii=int.Parse(rs);
+
                         var taskRemove = tdUsService.GetActiveByUserId(user.UserId).ToList();
-                        int taskIndex  = int.Parse(Console.ReadLine());
-                        tdUsService.Delete(taskRemove[taskIndex-1].ID);
+                        int taskIndex  = ii;
+                        if (taskIndex > 0 && taskIndex <= taskRemove.Count)
+                        {
+                            tdUsService.Delete(taskRemove[taskIndex - 1].ID);
+                        }
+                        else
+                        {
+                            throw new Exception("Неверный номер задачи");
+                        }
+                            break;
+                    case string Contains when update.Message.Text.Contains("/completetask"):
+                        tdUsService = (ToDoService)toDoService;
+                        var taskCompl = tdUsService.GetActiveByUserId(user.UserId).ToList();
+                        string compltask = "/completetask";
+
+                        var rsc = update.Message.Text;
+                        rsc = rsc.Remove(0, compltask.Length);
+                        rsc = rsc.Trim();
+                        int iic;
+
+                        iic = int.Parse(rsc);
+                        int taskIndexComp = iic;
+                        tdUsService.MarkCompleted(taskCompl[taskIndexComp - 1].ID);
+
+                        break;
+                    case "/showalltasks":
+
+                        tdUsService = (ToDoService)toDoService;
+                        var allTasks = tdUsService.GetAllByUserId(user.UserId);
+                        if (allTasks.Count > 0)
+                        {
+                            var taskList = allTasks.Select((task, index) => $"{index + 1},{task.Name}");
+
+                            // botClient.SendMessage(chatId, taskList);
+                            foreach (var item in taskList)
+                            {
+                                Console.WriteLine(item);
+                            }
+                            //Console.WriteLine(taskList);
+                        }
+                        else
+                        {
+                            throw new Exception("Нет активных задач");
+                        } 
                         break;
                     default:
                         Console.WriteLine(" введите корректную команду");
