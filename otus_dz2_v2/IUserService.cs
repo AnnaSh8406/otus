@@ -45,15 +45,18 @@ namespace otus_dz2_v2
 
             //botClient.SendMessage(update.Message.Chat, $"{update.Message.Id}");
             // telegramUserId= update.Message.Id;
-            TelegramUserId = telegramUserId++;
-            ConsoleBotClient botClient = new ConsoleBotClient();
-            Update update = new Update();
-            ToDoUser newTodoUser = new ToDoUser();
-            newTodoUser.TelegramUserId = telegramUserId;
+           // TelegramUserId = telegramUserId++;
+            //ConsoleBotClient botClient = new ConsoleBotClient();
+            //Update update = new Update();
+            //ToDoUser newTodoUser = new ToDoUser();
+            //newTodoUser.TelegramUserId = telegramUserId;
 
-            UserId = Guid.NewGuid();
+            //UserId = Guid.NewGuid();
             //telegramUserId = update.Message.From.Id;
-            return newTodoUser;
+            ToDoUser toDoUser=new ToDoUser();
+            toDoUser.TelegramUserId = telegramUserId;
+
+            return toDoUser;
         }
 
 

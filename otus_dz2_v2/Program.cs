@@ -97,44 +97,44 @@ namespace otus_dz2_v2
 
         static void Main(string[] args )
             {
-                int min = 0;
-                int max = 100;
+            /*   int min = 0;
+               int max = 100;
 
-                List<string> ToDoList = new List<string>();
-                string Vers = "Версия 1.3";
-                DateTime localDate = DateTime.Now;
- 
-            int taskCountLimit = 0;
-            bool validInputCnt = false;
-            /*
-            while (!validInputCnt)
-            {
-                validInputCnt = true;
-                Console.WriteLine("Введите максимально допустимое количество задач от 1 до 100 шт");
-                try
-                {
-                    taskCountLimit = Convert.ToInt32(Console.ReadLine());
-                        if  (!NumberValidator.ParseAndValidateInt(taskCountLimit, min, max)) 
-                        {
-                        throw new ArgumentException( "Введите максимально допустимое количество задач от 1 до 100 шт");
-                        }
-                }
-                catch (ArgumentException ex)  
-                    {
-                    Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-                    Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                    Console.WriteLine($"Трассировка стека: {ex.InnerException}");
-                    
-                    validInputCnt = false;
-                    }
-                catch (FormatException ex)
-                    {
-                        Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-                        Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                    validInputCnt = false;
-                }
-            }
-            */
+               List<string> ToDoList = new List<string>();
+               string Vers = "Версия 1.3";
+               DateTime localDate = DateTime.Now;
+
+           int taskCountLimit = 0;
+           bool validInputCnt = false;
+
+           while (!validInputCnt)
+           {
+               validInputCnt = true;
+               Console.WriteLine("Введите максимально допустимое количество задач от 1 до 100 шт");
+               try
+               {
+                   taskCountLimit = Convert.ToInt32(Console.ReadLine());
+                       if  (!NumberValidator.ParseAndValidateInt(taskCountLimit, min, max)) 
+                       {
+                       throw new ArgumentException( "Введите максимально допустимое количество задач от 1 до 100 шт");
+                       }
+               }
+               catch (ArgumentException ex)  
+                   {
+                   Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+                   Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                   Console.WriteLine($"Трассировка стека: {ex.InnerException}");
+
+                   validInputCnt = false;
+                   }
+               catch (FormatException ex)
+                   {
+                       Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+                       Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                   validInputCnt = false;
+               }
+           }
+           */
             /*
                         int taskLengthLimit = 0;
                        bool validInputLen = false;
@@ -185,16 +185,15 @@ namespace otus_dz2_v2
              Console.WriteLine($"InnerException: {ex.InnerException}");
          }
      */
-//
+            //
             //botClient.StartReceiving(Message);
             // UpdateHandler.ReferenceEquals(handler, botClient);
             //Console.WriteLine("Для начала работы введите одну из следующих комманд: /strat, /help, /info, /addtask, /showtasks, /removetask, /exit");
 
+            Console.WriteLine("Ведите одну из команд:/start, /help, /info, /exit, /addtask имя задачи, /showtasks, /removetask номер задачи, /completetasks номер задачи, /showalltasks");
             var botClient = new ConsoleBotClient();
 
-            // var update = new Update();
-             
-            //botClient.SendMessage(update.Message.Chat, "Для начала работыt");
+             var update = new Update();
             
             IUpdateHandler t=new UpdateHandler();
             
