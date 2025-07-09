@@ -288,7 +288,7 @@ namespace otus_dz2_v2
                             }
                             //Console.WriteLine(taskList);
                         }
-                            else
+                            else 
                             {
                                 throw new Exception("Нет активных задач");
                             }
