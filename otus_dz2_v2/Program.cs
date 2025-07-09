@@ -3,14 +3,25 @@ using System.Collections.Generic;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Otus.ToDoList.ConsoleBot;
+using Otus.ToDoList.ConsoleBot.Types;
+using Microsoft.VisualBasic;
+
+
+
 namespace otus_dz2_v2
 {
+
+
+ 
     internal class Program
     {
+        
         public class MyClass
         {
             public static string? UserName;
         }
+        /*
         public class TaskCountLimitException : Exception
         {
             public int ErrorCode { get; } // Дополнительное свойство
@@ -82,281 +93,309 @@ namespace otus_dz2_v2
             }
 
         }
+         */
 
-            static void Main(string[] args)
+        static void Main(string[] args )
             {
-                int min = 0;
-                int max = 100;
+            /*   int min = 0;
+               int max = 100;
 
-                List<string> ToDoList = new List<string>();
-                string Vers = "Версия 1.3";
-                DateTime localDate = DateTime.Now;
- 
-            int taskCountLimit = 0;
-            bool validInputCnt = false;
+               List<string> ToDoList = new List<string>();
+               string Vers = "Версия 1.3";
+               DateTime localDate = DateTime.Now;
 
-            while (!validInputCnt)
-            {
-                validInputCnt = true;
-                Console.WriteLine("Введите максимально допустимое количество задач от 1 до 100 шт");
-                try
-                {
-                    taskCountLimit = Convert.ToInt32(Console.ReadLine());
-                        if  (!NumberValidator.ParseAndValidateInt(taskCountLimit, min, max)) 
-                        {
-                        throw new ArgumentException( "Введите максимально допустимое количество задач от 1 до 100 шт");
-                        }
-                }
-                catch (ArgumentException ex)  
-                    {
-                    Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-                    Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                    Console.WriteLine($"Трассировка стека: {ex.InnerException}");
-                    
-                    validInputCnt = false;
-                    }
-                catch (FormatException ex)
-                    {
-                        Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-                        Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                    validInputCnt = false;
-                }
-            }
+           int taskCountLimit = 0;
+           bool validInputCnt = false;
 
+           while (!validInputCnt)
+           {
+               validInputCnt = true;
+               Console.WriteLine("Введите максимально допустимое количество задач от 1 до 100 шт");
+               try
+               {
+                   taskCountLimit = Convert.ToInt32(Console.ReadLine());
+                       if  (!NumberValidator.ParseAndValidateInt(taskCountLimit, min, max)) 
+                       {
+                       throw new ArgumentException( "Введите максимально допустимое количество задач от 1 до 100 шт");
+                       }
+               }
+               catch (ArgumentException ex)  
+                   {
+                   Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+                   Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                   Console.WriteLine($"Трассировка стека: {ex.InnerException}");
 
-             int taskLengthLimit = 0;
-            bool validInputLen = false;
+                   validInputCnt = false;
+                   }
+               catch (FormatException ex)
+                   {
+                       Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+                       Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                   validInputCnt = false;
+               }
+           }
+           */
+            /*
+                        int taskLengthLimit = 0;
+                       bool validInputLen = false;
 
-            while (!validInputLen)
-            {
-                validInputLen = true;
-                Console.WriteLine("Введите максимально допустимое количество символов от 1 до 100 шт");
-                try
-                {
-                    taskLengthLimit = Convert.ToInt32(Console.ReadLine());
-                    if (!NumberValidator.ParseAndValidateIntLen(taskLengthLimit, min, max))
-                    {
-                        throw new ArgumentException(  "Введите максимально допустимое длину задач от 1 до 100 символов");
-                    }
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-                    Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                    Console.WriteLine($"InnerException: {ex.InnerException}");
-                    validInputLen = false;
-                }
-                catch (FormatException ex)
-                {
-                    Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-                    Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                    validInputLen = false;
-                }
-            }
+                       while (!validInputLen)
+                       {
+                           validInputLen = true;
+                           Console.WriteLine("Введите максимально допустимое количество символов от 1 до 100 шт");
+                           try
+                           {
+                               taskLengthLimit = Convert.ToInt32(Console.ReadLine());
+                               if (!NumberValidator.ParseAndValidateIntLen(taskLengthLimit, min, max))
+                               {
+                                   throw new ArgumentException(  "Введите максимально допустимое длину задач от 1 до 100 символов");
+                               }
+                           }
+                           catch (ArgumentException ex)
+                           {
+                               Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+                               Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                               Console.WriteLine($"InnerException: {ex.InnerException}");
+                               validInputLen = false;
+                           }
+                           catch (FormatException ex)
+                           {
+                               Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+                               Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                               validInputLen = false;
+                           }
+                       }
+                       */
 
-
-           
+            /*
                 Console.WriteLine("Для начала работы введите одну из следующих комманд: /strat, /help, /info, /addtask, /showtasks, /removetask, /exit");
                 string CmdEcho = "/echo";
 
-                string UserCommand = Console.ReadLine();
-            try
-            {
-                StringValidator.ValidateString(UserCommand);
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+            // string UserCommand = Console.ReadLine();
+           
+         try
+         {
+             StringValidator.ValidateString(UserCommand);
+         }
+         catch (ArgumentException ex)
+         {
+             Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
 
-                Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                Console.WriteLine($"InnerException: {ex.InnerException}");
-            }
-        
-                do
-                {
+             Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+             Console.WriteLine($"InnerException: {ex.InnerException}");
+         }
+     */
+            //
+            //botClient.StartReceiving(Message);
+            // UpdateHandler.ReferenceEquals(handler, botClient);
+            //Console.WriteLine("Для начала работы введите одну из следующих комманд: /strat, /help, /info, /addtask, /showtasks, /removetask, /exit");
+
+            Console.WriteLine("Ведите одну из команд:/start, /help, /info, /exit, /addtask имя задачи, /showtasks, /removetask номер задачи, /completetasks номер задачи, /showalltasks");
+            var botClient = new ConsoleBotClient();
+
+             var update = new Update();
+            
+            IUpdateHandler t=new UpdateHandler();
+            
+            botClient.StartReceiving( t );
+           //t.HandleUpdateAsync(update.Message.Chat, "Для начала работыt");
+           
 
 
+            //UpdateHandler u =new UpdateHandler();
 
-                    switch (UserCommand.ToLower())
-                    {
-                        case "/start":
-                            Console.WriteLine("Введите Ваше имя");
-                            MyClass.UserName = Console.ReadLine();
-                            bool IsUserName = string.IsNullOrEmpty(MyClass.UserName);
 
-                            while (IsUserName == true || MyClass.UserName == " ")
-                            {
-                                Console.WriteLine("Введите корректное имя");
-                                MyClass.UserName = Console.ReadLine();
-                                IsUserName = string.IsNullOrEmpty(MyClass.UserName);
-                            }
-                            Console.WriteLine($"Привет {MyClass.UserName} =)");
-                            break;
-                        case "/help":
-                            Console.WriteLine($"{MyClass.UserName} Краткое описание:\n" +
-                            "/start - начало работы\n" +
-                            "/help - краткое описание доступных комманд\n" +
-                            "/info - информация о версии и дате запуска кода\n" +
-                            "/exit - завершение работы\n" +
-                            "/echo + слово/фраза - возврат введенного пользователем слова, доступно только после выполнения /start\n" +
-                           "/addtask - добавить задачу в сптсок дел\n" +
-                            "/showtasks - показать ранее добавленные задачи\n" +
-                            "/removetask - удалить задачу");
-                            break;
-
-                        case "/info":
-                            Console.WriteLine($"{MyClass.UserName} {Vers} {localDate}");
-                            break;
-
-                        case string Contains when UserCommand.Contains("/echo") && string.IsNullOrEmpty(MyClass.UserName) == false:
-                            string Cont = UserCommand.Remove(0, CmdEcho.Length);
-                            Console.WriteLine(Cont.Trim());
-                            break;
-
-                        case string Contains when UserCommand.Contains("/echo") && string.IsNullOrEmpty(MyClass.UserName) == true:
-                            Console.WriteLine("Сначала запустите команду /start");
-                            break;
-
-                        case "/addtask":
-                            try
-                            {
-
-                                if (ToDoList.Count < taskCountLimit)
-                                {
-
-                                    Console.WriteLine($"{MyClass.UserName} Пожалуйста, введите описание задачи");
-                                    string UserTask = Console.ReadLine();
-                                    int taskLength = UserTask.Length;
-                                    if (taskLength <= taskLengthLimit)
-                                    {
-                                        if (!ToDoList.Contains(UserTask))
-                                        {
-                                            ToDoList.Add(UserTask);
-
-                                            Console.WriteLine($"{MyClass.UserName} задача {UserTask} добавлена, введите след. команду");
-                                        }
-                                        else
-                                        {
-                                            throw new DuplicateTaskException($"Задача {UserTask} уже существует. Введите след команду");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        throw new TaskLengthLimitException($"Длина задачи {taskLength} превышает максимально допустимое значение {taskLengthLimit}. Введите след команду");
-                                    }
+            //  botClient.StartReceiving(t);
 
 
 
-                                }
 
-                            }
-                            catch (TaskLengthLimitException ex)
-                            {
-                                Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-
-                                Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                                Console.WriteLine($"InnerException: {ex.InnerException}");
-                            }
-
-                            catch (DuplicateTaskException ex)
-                            {
-                                Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-
-                                Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                                Console.WriteLine($"InnerException: {ex.InnerException}");
-                            }
-
-
-                            catch (TaskCountLimitException ex)
-                            {
-                                Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-
-                                Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                                Console.WriteLine($"InnerException: {ex.InnerException}");
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-
-                                Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                                Console.WriteLine($"InnerException: {ex.InnerException}");
-                            }
+            ///////
+            /*  do
+                  {
 
 
 
-                            break;
+                      switch (ReferenceEquals(handler, botClient))
+                      {
+                          case "/start":
+                              Console.WriteLine("Введите Ваше имя");
+                              MyClass.UserName = Console.ReadLine();
+                              bool IsUserName = string.IsNullOrEmpty(MyClass.UserName);
 
-                        case "/showtasks":
-                            if (ToDoList.Count > 0)
-                            {
-                                Console.WriteLine($"{MyClass.UserName} Вот Ваш список задач");
-                                for (int i = 0; i < ToDoList.Count; i++)
-                                {
-                                    Console.WriteLine((i + 1) + " - " + ToDoList[i]);
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine($"{MyClass.UserName} В списке нет задач");
-                            }
-                            break;
+                              while (IsUserName == true || MyClass.UserName == " ")
+                              {
+                                  Console.WriteLine("Введите корректное имя");
+                                  MyClass.UserName = Console.ReadLine();
+                                  IsUserName = string.IsNullOrEmpty(MyClass.UserName);
+                              }
+                              Console.WriteLine($"Привет {MyClass.UserName} =)");
+                              break;
+                          case "/help":
+                              Console.WriteLine($"{MyClass.UserName} Краткое описание:\n" +
+                              "/start - начало работы\n" +
+                              "/help - краткое описание доступных комманд\n" +
+                              "/info - информация о версии и дате запуска кода\n" +
+                              "/exit - завершение работы\n" +
+                              "/echo + слово/фраза - возврат введенного пользователем слова, доступно только после выполнения /start\n" +
+                             "/addtask - добавить задачу в сптсок дел\n" +
+                              "/showtasks - показать ранее добавленные задачи\n" +
+                              "/removetask - удалить задачу");
+                              break;
 
-                        case "/removetask":
-                            if (ToDoList.Count > 0)
-                            {
-                                Console.WriteLine($"{MyClass.UserName} Вот Ваш список задач:\n" +
-                                    $"Введите номер задачи, которую хотите удалить:");
-                                for (int i = 0; i < ToDoList.Count; i++)
-                                {
-                                    Console.WriteLine((i + 1) + " - " + ToDoList[i]);
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine($"{MyClass.UserName} В списке еще нет задач");
-                            }
-                            int UserTaskNum = int.Parse(Console.ReadLine());
-                            UserTaskNum--;
+                          case "/info":
+                              Console.WriteLine($"{MyClass.UserName} {Vers} {localDate}");
+                              break;
 
-                            if (UserTaskNum >= 0 && UserTaskNum < ToDoList.Count)
-                            {
-                                ToDoList.RemoveAt(UserTaskNum);
-                                Console.WriteLine("Задача удалена. Введите след команду");
-                            }
+                          case string Contains when UserCommand.Contains("/echo") && string.IsNullOrEmpty(MyClass.UserName) == false:
+                              string Cont = UserCommand.Remove(0, CmdEcho.Length);
+                              Console.WriteLine(Cont.Trim());
+                              break;
 
-                            else
-                            {
-                                Console.WriteLine($"{MyClass.UserName} Такого номера не существует");
-                            }
+                          case string Contains when UserCommand.Contains("/echo") && string.IsNullOrEmpty(MyClass.UserName) == true:
+                              Console.WriteLine("Сначала запустите команду /start");
+                              break;
 
+                          case "/addtask":
+                              try
+                              {
 
-                            break;
+                                  if (ToDoList.Count < taskCountLimit)
+                                  {
 
-                        default:
-                            Console.WriteLine($"{MyClass.UserName} введите корректную команду");
-                            break;
+                                      Console.WriteLine($"{MyClass.UserName} Пожалуйста, введите описание задачи");
+                                      string UserTask = Console.ReadLine();
+                                      int taskLength = UserTask.Length;
+                                      if (taskLength <= taskLengthLimit)
+                                      {
+                                          if (!ToDoList.Contains(UserTask))
+                                          {
+                                              ToDoList.Add(UserTask);
 
-                    }
-                    UserCommand = Console.ReadLine();
-                    try
-                    {
-                        StringValidator.ValidateString(UserCommand);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-
-                        Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-                        Console.WriteLine($"InnerException: {ex.InnerException}");
-                    }
-
-
-
-            } while (UserCommand != "/exit");
-                Environment.Exit(0);
+                                              Console.WriteLine($"{MyClass.UserName} задача {UserTask} добавлена, введите след. команду");
+                                          }
+                                          else
+                                          {
+                                              throw new DuplicateTaskException($"Задача {UserTask} уже существует. Введите след команду");
+                                          }
+                                      }
+                                      else
+                                      {
+                                          throw new TaskLengthLimitException($"Длина задачи {taskLength} превышает максимально допустимое значение {taskLengthLimit}. Введите след команду");
+                                      }
 
 
-             
+
+                                  }
+
+                              }
+                              catch (TaskLengthLimitException ex)
+                              {
+                                  Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+
+                                  Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                                  Console.WriteLine($"InnerException: {ex.InnerException}");
+                              }
+
+                              catch (DuplicateTaskException ex)
+                              {
+                                  Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+
+                                  Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                                  Console.WriteLine($"InnerException: {ex.InnerException}");
+                              }
+
+
+                              catch (TaskCountLimitException ex)
+                              {
+                                  Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+
+                                  Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                                  Console.WriteLine($"InnerException: {ex.InnerException}");
+                              }
+                              catch (Exception ex)
+                              {
+                                  Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+
+                                  Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                                  Console.WriteLine($"InnerException: {ex.InnerException}");
+                              }
+
+
+
+                              break;
+
+                          case "/showtasks":
+                              if (ToDoList.Count > 0)
+                              {
+                                  Console.WriteLine($"{MyClass.UserName} Вот Ваш список задач");
+                                  for (int i = 0; i < ToDoList.Count; i++)
+                                  {
+                                      Console.WriteLine((i + 1) + " - " + ToDoList[i]);
+                                  }
+                              }
+                              else
+                              {
+                                  Console.WriteLine($"{MyClass.UserName} В списке нет задач");
+                              }
+                              break;
+
+                          case "/removetask":
+                              if (ToDoList.Count > 0)
+                              {
+                                  Console.WriteLine($"{MyClass.UserName} Вот Ваш список задач:\n" +
+                                      $"Введите номер задачи, которую хотите удалить:");
+                                  for (int i = 0; i < ToDoList.Count; i++)
+                                  {
+                                      Console.WriteLine((i + 1) + " - " + ToDoList[i]);
+                                  }
+                              }
+                              else
+                              {
+                                  Console.WriteLine($"{MyClass.UserName} В списке еще нет задач");
+                              }
+                              int UserTaskNum = int.Parse(Console.ReadLine());
+                              UserTaskNum--;
+
+                              if (UserTaskNum >= 0 && UserTaskNum < ToDoList.Count)
+                              {
+                                  ToDoList.RemoveAt(UserTaskNum);
+                                  Console.WriteLine("Задача удалена. Введите след команду");
+                              }
+
+                              else
+                              {
+                                  Console.WriteLine($"{MyClass.UserName} Такого номера не существует");
+                              }
+
+
+                              break;
+
+                          default:
+                              Console.WriteLine($"{MyClass.UserName} введите корректную команду");
+                              break;
+
+                      }
+                      UserCommand = Console.ReadLine();
+                      try
+                      {
+                          StringValidator.ValidateString(UserCommand);
+                      }
+                      catch (ArgumentException ex)
+                      {
+                          Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
+
+                          Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+                          Console.WriteLine($"InnerException: {ex.InnerException}");
+                      }
+
+
+
+              } while (UserCommand != "/exit");
+                  Environment.Exit(0);
+
+              */
+
 
         }
     }
