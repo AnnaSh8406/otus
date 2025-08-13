@@ -1,4 +1,4 @@
-﻿#pragma warning disable CS8618
+﻿ 
 
 namespace Otus.ToDoList.ConsoleBot.Types;
 /// <summary>

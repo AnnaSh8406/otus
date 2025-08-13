@@ -1,5 +1,5 @@
 ﻿public enum ToDoItemState
 { 
-Activ,
-Complited
+Active,
+Completed
 }
