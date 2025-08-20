@@ -59,7 +59,7 @@ namespace otus_dz2_v2
                          ToDoService tdUaService = (ToDoService)toDoService;
                          ToDoUser? toDoUsera = new ToDoUser();
 
-                        toDoUsera = newToDoUser.GetUser(update.Message.From.Id);
+                        toDoUsera = newToDoUser.GetUser(update.Message.From.Id); 
 
                         if (toDoUsera != null)
                         {
@@ -90,11 +90,11 @@ namespace otus_dz2_v2
                         tdUsService = (ToDoService)toDoService;
                         ToDoUser? toDoUsers = new ToDoUser();
                       
-                        toDoUsers = newToDoUser.GetUser(update.Message.From.Id);
-                   
-                        var activeTasks = tdUsService.GetActiveByUserId(toDoUsers.UserId);
+                        toDoUsers = newToDoUser.GetUser(update.Message.From.Id); 
+
                         if (toDoUsers != null)
                         {
+                            var activeTasks  = tdUsService.GetActiveByUserId(toDoUsers.UserId);
                             if (activeTasks.Count > 0)
                             {
                                 try
@@ -228,9 +228,9 @@ namespace otus_dz2_v2
                         ToDoUser? toDoUseral = new ToDoUser();
                         toDoUseral = newToDoUser.GetUser(update.Message.From.Id);
 
-                        var allTasks = tdUsService.GetAllByUserId(toDoUseral.UserId);
-                        if (toDoUseral != null)
+                        if (toDoUseral != null  )
                         {
+                            var allTasks = tdUsService.GetAllByUserId(toDoUseral.UserId);
                             if (allTasks.Count > 0)
                             {
                                 try

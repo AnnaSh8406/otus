@@ -40,7 +40,7 @@ namespace otus_dz2_v2
                 return newUser;
             }
 
-            private static List<ToDoUser> _user = new List<ToDoUser>();
+            private readonly List<ToDoUser> _user = new List<ToDoUser>();
 
 
         }

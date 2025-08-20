@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Otus.ToDoList.ConsoleBot.Types;
 
 namespace otus_dz2_v2
-{
-    public class ToDoService : IToDoService
+{ 
+
+    public class ToDoService() : IToDoService
     {
         private readonly List<ToDoItem> _toDoItems = new List<ToDoItem>();
-        public const int MaxCount = 100;
-        public const int MaxTaskLenght = 100;
 
-       
+      
 
-
-        // public readonly int MaxCount ;
-        // public readonly int MaxTaskLenght ;
-
+        
 
         public IReadOnlyList<ToDoItem> GetAllByUserId(Guid userId)
         {
@@ -29,16 +26,16 @@ namespace otus_dz2_v2
         {
             return _toDoItems.Where(t => t.User.UserId == userId && t.State == ToDoItemState.Active).ToList();//.AsReadOnly();
         }
-        public ToDoItem Add(ToDoUser user, string name)
+        public ToDoItem Add(ToDoUser user, string name )
         {
-            if (_toDoItems.Count(t=>t.User.UserId==user.UserId && t.State== ToDoItemState.Active) >= MaxCount)
+            if (_toDoItems.Count(t=>t.User.UserId==user.UserId && t.State== ToDoItemState.Active) >= Program.maxTasks)
             {
-                throw new Exception("Превышено максимальное кол-во задач (100 задач)");
+                throw new Exception($"Превышено максимальное кол-во задач ({Program.maxTasks} задач)");
             }
 
-            if (name.Length > MaxTaskLenght)
+            if (name.Length > Program.maxTaskLenght)
             {
-                throw new Exception("Превышено количество символов в задаче (100 символов)");
+                throw new Exception($"Превышено количество символов в задаче ({Program.maxTaskLenght} символов)");
             }
             if (string.IsNullOrEmpty(name))
             {
