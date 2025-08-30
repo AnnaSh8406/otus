@@ -6,6 +6,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using Otus.ToDoList.ConsoleBot;
 using Otus.ToDoList.ConsoleBot.Types;
 using Microsoft.VisualBasic;
+using otus_dz2_v2.core.DataAccess;
+using otus_dz2_v2.core.Services;
+using otus_dz2_v2.Infrastructure.DataAccess;
+using otus_dz2_v2.TelegramBot;
 
 
 
@@ -25,48 +29,67 @@ namespace otus_dz2_v2
                 throw new Exception("Превышено максимальное кол-во задач/длина задачи или некорректное значение"); ;
             return number;
         }
-        static void Main(string[] args )
-            {
-            bool validInputLen = false;
+        private static int SetMaxTasks()
+        {
+            Console.WriteLine("Введите максимально допустимое количество задач от 1 до 100 шт");
+            string inputString = Console.ReadLine();
+            IsString(inputString);
+            int maxTasks = ParseAndValidateInt(inputString, 1, 100);
+            return maxTasks;
+        }
+        private static int SetMaxLengthNameTasks()
+        {
+            Console.WriteLine("Введите максимально допустимую длину задачи от 1 символа до 100");
+            string inputString = Console.ReadLine();
+            IsString(inputString);
+            int maxLengthNameTask = ParseAndValidateInt(inputString, 1, 100);
 
-            while (!validInputLen)
+            return maxLengthNameTask;
+        }
+        private static void IsString(string? str)
+        {
+            if (str == null || str.Trim() == "")
+                throw new ArgumentException("Введеная строка пустая");
+
+        }
+        static void Main(string[] args)
+        {
+
+            while (true)
             {
-                validInputLen = true;
                 try
                 {
-                    Console.WriteLine("Введите количество задач");
-                    maxTasks = ParseAndValidateInt(Console.ReadLine(), 1, 100);
+                    int maxTasks = SetMaxTasks();
+                    int taskLength = SetMaxLengthNameTasks();
+
+                    var botClient = new ConsoleBotClient();
+                    IUserRepository userRepository = new InMemoryUserRepository();
+                    IUserService userService = new UserService(userRepository);
+                    IToDoRepository toDoRepository = new InMemoryToDoRepository();
+                    IToDoService toDoService = new ToDoService(maxTasks, taskLength, toDoRepository);
+                    IUpdateHandler updateHandler = new UpdateHandler(userService, toDoService);
+
+               
+                    botClient.StartReceiving(updateHandler);
+
+
+
+                    break;
                 }
-                catch(Exception ex)
+                catch (ArgumentOutOfRangeException ex)
                 {
-                    Console.WriteLine($"Произошла непредвиденная ошибка: {ex.Message}");
-                      validInputLen = false;
+                    Console.WriteLine(ex.Message);
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Произошла непредвиденная ошибка", ex.Message);
+
                 }
             }
-            bool validInputLenTask = false;
-            while (!validInputLenTask)
-            {
-                validInputLenTask = true;
-                try
-                {
-
-                    Console.WriteLine("Введите длину задачи");
-                    maxTaskLenght = ParseAndValidateInt(Console.ReadLine(), 1, 100);
-                }
-                catch
-                {
-                    Console.WriteLine($"Не корректный формат числа");
-                    validInputLenTask = false;
-                }
-            }
-
-            Console.WriteLine("Ведите одну из команд:/start, /help, /info, /exit, /addtask имя задачи, /showtasks, /removetask номер задачи, /completetask номер задачи, /showalltasks");
-            var botClient = new ConsoleBotClient();
-
-             
-            IUpdateHandler t=new UpdateHandler();
-             botClient.StartReceiving(t);
-         
 
         }
     }
