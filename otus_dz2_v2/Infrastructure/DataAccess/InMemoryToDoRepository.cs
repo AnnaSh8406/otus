@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using otus_dz2_v2.core.DataAccess;
-using otus_dz2_v2.core.Entities;
+using Otus.ToDoList.ConsoleBot.Types;
+using System.Xml.Linq;
+using otus_dz2_v2.Core.DataAccess;
+using otus_dz2_v2.Core.Entities;
 
 namespace otus_dz2_v2.Infrastructure.DataAccess
 {
@@ -15,50 +17,53 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
             tasks = new List<ToDoItem>();
         }
         private readonly List<ToDoItem> tasks;
-        public IReadOnlyList<ToDoItem> GetAllByUserId(Guid userId)
+        public async Task<IReadOnlyList<ToDoItem>> GetAllByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return tasks.Where(x => x.User.UserId == userId).ToList();
+            return await Task.FromResult(tasks.Where(x => x.User.UserId == userId).ToList());
         }
 
-        public IReadOnlyList<ToDoItem> GetActiveByUserId(Guid userId)
+        public async Task<IReadOnlyList<ToDoItem>> GetActiveByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return tasks.Where(x => x.User.UserId == userId && x.State == ToDoItemState.Active).ToList();
+            return await Task.FromResult(tasks.Where(x => x.User.UserId == userId && x.State == ToDoItemState.Active).ToList());
         }
 
-        public void Add(ToDoItem item)
+        public async Task AddAsync(ToDoItem item, CancellationToken cancellationToken)
         {
-            tasks.Add(item);
+            await Task.Run(() => tasks.Add(item), cancellationToken);
         }
 
-        public void Update(ToDoItem item)
+        public async Task UpdateAsync(ToDoItem item, CancellationToken cancellationToken)
         {
             int index = tasks.FindIndex(x => x.Id == item.Id);
             tasks[index] = item;
         }
 
-        public void Delete(Guid id)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
             int index = tasks.FindIndex(x => x.Id == id);
-            tasks.RemoveAt(index);
+            await Task.Run(() => tasks.RemoveAt(index), cancellationToken);
         }
 
-        public bool ExistsByName(Guid userId, string name)
+        public async Task<bool> ExistsByNameAsync(Guid userId, string name, CancellationToken cancellationToken)
         {
-            int items = tasks.Where(x => x.User.UserId == userId && x.Name == name).ToList().Count();
 
-            if (items == 0)
-                return true;
-
-            return false;
+            return await Task.FromResult(tasks.Any(t => t.User.UserId == userId && t.Name == name));
         }
 
-        public int CountActive(Guid userId)
+        public async Task<int> CountActiveAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return tasks.Where(x => x.User.UserId == userId).ToList().Count;
+
+            return await Task.FromResult(tasks.Count(t => t.User.UserId == userId && t.State == ToDoItemState.Active));
         }
-        public IReadOnlyList<ToDoItem> Find(Guid userId, Func<ToDoItem, bool> predicate)
+        public async Task<IReadOnlyList<ToDoItem>> FindAsync(Guid userId, Func<ToDoItem, bool> predicate, CancellationToken cancellationToken)
         {
-            return tasks.Where(x => x.User.UserId == userId).Where(predicate).ToList();
+            return await Task.FromResult(tasks.Where(predicate).ToList());
+        }
+
+
+        public async Task<ToDoItem?> GetAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return tasks.FirstOrDefault(t => t.Id == id);
         }
     }
 }

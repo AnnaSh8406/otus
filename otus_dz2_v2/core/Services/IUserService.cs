@@ -5,16 +5,16 @@ using System.Text;
 using System.Xml.Linq;
 using Otus.ToDoList.ConsoleBot;
 using Otus.ToDoList.ConsoleBot.Types;
-using otus_dz2_v2.core.Entities;
+using otus_dz2_v2.Core.Entities;
 
 
-namespace otus_dz2_v2.core.Services
+namespace otus_dz2_v2.Core.Services
 {
 
     public interface IUserService
     {
-        ToDoUser RegisterUser(long telegramUserId, string telegramUserName);
-        ToDoUser? GetUser(long telegramUserId);
+        Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken);
+        Task<ToDoUser> RegisterUserAsync(long telegramUserId, string telegramUsername, CancellationToken cancellationToken);
     }
 
 

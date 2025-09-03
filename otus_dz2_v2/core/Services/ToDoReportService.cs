@@ -3,27 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using otus_dz2_v2.core.Entities;
+using otus_dz2_v2.Core.DataAccess;
+using otus_dz2_v2.Core.Entities;
 
-namespace otus_dz2_v2.core.Services
+namespace otus_dz2_v2.Core.Services
 {
     public class ToDoReportService : IToDoReportService
     {
-        public ToDoReportService(IToDoService toDoSer)
+        public ToDoReportService(IToDoService toDoRepository)
         {
-            this.toDoSer = toDoSer;
+            this.toDoRepository = toDoRepository;
         }
 
-        private readonly IToDoService toDoSer;
+        private readonly IToDoService toDoRepository;
 
 
-        public (int total, int completed, int active, DateTime generatedAt) GetUserStats(Guid userId)
+        public async Task<(int Total, int Completed, int Active, DateTime GeneratedAt)> GetUserStatsAsync(Guid userId, CancellationToken cancellationToken)
         {
-            IReadOnlyList<ToDoItem> tasks = toDoSer.GetAllByUserId(userId);
-            int totalTasks = tasks.Count;
-            int activeTasks = tasks.Where(x => x.State == ToDoItemState.Active).ToList().Count();
-
-            return (totalTasks, totalTasks - activeTasks, activeTasks, DateTime.Now);
+            var todos = await toDoRepository.GetAllByUserIdAsync(userId, cancellationToken);
+            return (
+                Total: todos.Count,
+                Completed: todos.Count(t => t.State == ToDoItemState.Completed),
+                Active: todos.Count(t => t.State == ToDoItemState.Active),
+                GeneratedAt: DateTime.UtcNow
+            );
         }
+
     }
 }

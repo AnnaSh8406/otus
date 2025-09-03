@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Otus.ToDoList.ConsoleBot.Types;
+using otus_dz2_v2.Core.Entities;
+using otus_dz2_v2.Core.Services;
 
-namespace otus_dz2_v2.core.Entities
+namespace otus_dz2_v2.Core.Entities
 {
 
     public class ToDoItem

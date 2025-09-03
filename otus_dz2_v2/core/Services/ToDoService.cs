@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Otus.ToDoList.ConsoleBot.Types;
-using otus_dz2_v2.core.DataAccess;
-using otus_dz2_v2.core.Entities;
-using otus_dz2_v2.core.Exceptions;
+using otus_dz2_v2.Core.DataAccess;
+using otus_dz2_v2.Core.Entities;
+using otus_dz2_v2.Core.Exceptions;
 
-namespace otus_dz2_v2.core.Services
+namespace otus_dz2_v2.Core.Services
 {
 
     public class ToDoService : IToDoService
@@ -26,66 +28,67 @@ namespace otus_dz2_v2.core.Services
         private readonly IToDoRepository toDoRepository;
 
 
-        public IReadOnlyList<ToDoItem> GetActiveByUserId(Guid userId)
+        public async Task<IReadOnlyList<ToDoItem>> GetAllByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return toDoRepository.GetActiveByUserId(userId);
+            return await toDoRepository.GetAllByUserIdAsync(userId, cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<ToDoItem>> GetActiveByUserIdAsync(Guid userId, CancellationToken cancellationToken)
+        {
+            return await toDoRepository.GetActiveByUserIdAsync(userId, cancellationToken);
         }
 
 
-        public IReadOnlyList<ToDoItem> GetAllByUserId(Guid userId)
+        public async Task<ToDoItem> AddAsync(ToDoUser? user, string name, CancellationToken cancellationToken)
         {
-            return toDoRepository.GetAllByUserId(userId);
-        }
-
-
-        public ToDoItem Add(ToDoUser user, string name)
-        {
-            if (toDoRepository.CountActive(user.UserId) >= maxTasks)
+            if ((await toDoRepository.CountActiveAsync(user.UserId, cancellationToken)) >= maxTasks)
                 throw new TaskCountLimitException(maxTasks);
 
             if (name.Length > taskLength)
+            {
                 throw new TaskLengthLimitException(name.Length);
+            }
 
-            if (!DublicateCheck(name, user))
+
+
+            if (await DublicateCheckAsync(name, user, cancellationToken))
                 throw new DuplicateTaskException(name);
 
             ToDoItem newItem = new ToDoItem(name, user);
-            toDoRepository.Add(newItem);
+            toDoRepository.AddAsync(newItem, cancellationToken);
             return newItem;
         }
 
 
-        public void MarkCompleted(Guid id, ToDoUser user)
+        public async Task MarkCompletedAsync(Guid id, CancellationToken cancellationToken)
         {
-            IReadOnlyList<ToDoItem> tasks = GetAllByUserId(user.UserId).Where(x => x.Id == id).ToList();
-
-
-            if (tasks == null)
-                throw new ArgumentException("Задача не найдена");
-
-            tasks[0].State = ToDoItemState.Completed;
-            tasks[0].StartChangeAt = DateTime.Now;
-            toDoRepository.Update(tasks[0]);
-
+            var tasks = await toDoRepository.GetAsync(id, cancellationToken);
+            if (tasks != null)
+            {
+                tasks.State = ToDoItemState.Completed;
+                await toDoRepository.UpdateAsync(tasks, cancellationToken);
+            }
 
         }
 
 
-        public void Delete(Guid id)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken)
         {
-            toDoRepository.Delete(id);
+            await toDoRepository.DeleteAsync(id, cancellationToken);
         }
 
 
-        public IReadOnlyList<ToDoItem> Find(ToDoUser user, string namePrefix)
+
+        public async Task<IReadOnlyList<ToDoItem>> FindAsync(ToDoUser user, string namePrefix, CancellationToken cancellationToken)
         {
-            return toDoRepository.Find(user.UserId, x => x.Name.Substring(0, namePrefix.Length) == namePrefix);
+            return await toDoRepository.FindAsync(user.UserId, t => t.Name.StartsWith(namePrefix, StringComparison.OrdinalIgnoreCase), cancellationToken);
         }
 
 
-        private bool DublicateCheck(string name, ToDoUser user)
+        private async Task<bool> DublicateCheckAsync(string name, ToDoUser? user, CancellationToken cancellationToken)
         {
-            return toDoRepository.ExistsByName(user.UserId, name);
+            return await toDoRepository.ExistsByNameAsync(user.UserId, name, cancellationToken);
         }
+
     }
 }

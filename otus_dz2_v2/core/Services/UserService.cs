@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Otus.ToDoList.ConsoleBot;
 using Otus.ToDoList.ConsoleBot.Types;
-using otus_dz2_v2.core.DataAccess;
-using otus_dz2_v2.core.Entities;
+using otus_dz2_v2.Core.DataAccess;
+using otus_dz2_v2.Core.Entities;
 
-namespace otus_dz2_v2.core.Services
+namespace otus_dz2_v2.Core.Services
 {
 
     public class UserService : IUserService
@@ -16,21 +16,26 @@ namespace otus_dz2_v2.core.Services
 
         private readonly IUserRepository userRep;
 
-        public ToDoUser RegisterUser(long telegramUserId, string telegramUserName)
+        public async Task<ToDoUser> RegisterUserAsync(long telegramUserId, string telegramUsername, CancellationToken cancellationToken)
         {
-            ToDoUser user = new ToDoUser(telegramUserId, telegramUserName);
-            userRep.Add(user);
+            ToDoUser user = new ToDoUser(telegramUserId, telegramUsername);
+            await userRep.AddAsync(user, cancellationToken);
             return user;
+
         }
 
-        public ToDoUser? GetUser(long telegramUserId)
+
+        public async Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken)
         {
-            ToDoUser user = userRep.GetUserByTelegramUserId(telegramUserId);
+
+
+            ToDoUser user = await userRep.GetUserByTelegramUserIdAsync(telegramUserId, cancellationToken);
             if (user != null)
                 return user;
 
             return null;
         }
+
 
         public UserService(IUserRepository userRep)
         {
@@ -40,4 +45,4 @@ namespace otus_dz2_v2.core.Services
     }
 
 }
- 
+

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace otus_dz2_v2.core.Exceptions
+namespace otus_dz2_v2.Core.Exceptions
 {
     class DuplicateTaskException : Exception
     {

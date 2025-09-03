@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using otus_dz2_v2.core.Entities;
+using otus_dz2_v2.Core.Entities;
 
-namespace otus_dz2_v2.core.DataAccess
+namespace otus_dz2_v2.Core.DataAccess
 {
     public interface IToDoRepository
     {
-        IReadOnlyList<ToDoItem> GetAllByUserId(Guid userId);
-        IReadOnlyList<ToDoItem> GetActiveByUserId(Guid userId);
-        void Add(ToDoItem item);
-        void Update(ToDoItem item);
-        void Delete(Guid id);
-        bool ExistsByName(Guid userId, string name);
-        int CountActive(Guid userId);
-        IReadOnlyList<ToDoItem> Find(Guid userId, Func<ToDoItem, bool> predicate);
+        Task<IReadOnlyList<ToDoItem>> GetAllByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+        Task<IReadOnlyList<ToDoItem>> GetActiveByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+        Task<ToDoItem?> GetAsync(Guid id, CancellationToken cancellationToken);
+        Task AddAsync(ToDoItem item, CancellationToken cancellationToken);
+        Task UpdateAsync(ToDoItem item, CancellationToken cancellationToken);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken);
+        Task<bool> ExistsByNameAsync(Guid userId, string name, CancellationToken cancellationToken);
+        Task<int> CountActiveAsync(Guid userId, CancellationToken cancellationToken);
+        Task<IReadOnlyList<ToDoItem>> FindAsync(Guid userId, Func<ToDoItem, bool> predicate, CancellationToken cancellationToken);
     }
 }

@@ -3,38 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using otus_dz2_v2.core.DataAccess;
-using otus_dz2_v2.core.Entities;
+using Otus.ToDoList.ConsoleBot.Types;
+using otus_dz2_v2.Core.DataAccess;
+using otus_dz2_v2.Core.Entities;
+using otus_dz2_v2.Core.Services;
 
 namespace otus_dz2_v2.Infrastructure.DataAccess
 {
     public class InMemoryUserRepository : IUserRepository
     {
-        public InMemoryUserRepository()
+
+        private readonly List<ToDoUser> users = new List<ToDoUser>();
+        public async Task<ToDoUser?> GetUserAsync(Guid userId, CancellationToken cancellationToken)
         {
-            users = new List<ToDoUser>();
+
+            return await Task.FromResult(users.FirstOrDefault(u => u.UserId == userId));
+        }
+        public async Task<ToDoUser?> GetUserByTelegramUserIdAsync(long telegramUserId, CancellationToken cancellationToken)
+        {
+
+            return await Task.FromResult(users.FirstOrDefault(u => u.TelegramUserId == telegramUserId));
         }
 
-        private readonly List<ToDoUser> users;
-        public ToDoUser? GetUser(Guid userId)
-        {
-            foreach (var user in users)
-                if (user.UserId == userId)
-                    return user;
 
-            return null;
-        }
-        public ToDoUser? GetUserByTelegramUserId(long telegramUserId)
+        public async Task AddAsync(ToDoUser user, CancellationToken cancellationToken)
         {
-            foreach (var user in users)
-                if (user.TelegramUserId == telegramUserId)
-                    return user;
+            await Task.Run(() => users.Add(user), cancellationToken);
+        }
 
-            return null;
-        }
-        public void Add(ToDoUser user)
+        public Task<ToDoUser?> GetUserAsync(ToDoUser user, CancellationToken cancellationToken)
         {
-            users.Add(user);
+            throw new NotImplementedException();
         }
     }
 }

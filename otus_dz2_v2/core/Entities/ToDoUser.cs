@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace otus_dz2_v2.core.Entities
+namespace otus_dz2_v2.Core.Entities
 {
     public class ToDoUser
     {
