@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using Otus.ToDoList.ConsoleBot;
-using Otus.ToDoList.ConsoleBot.Types;
 using Microsoft.VisualBasic;
 using otus_dz2_v2.Core.DataAccess;
 using otus_dz2_v2.Core.Services;
 using otus_dz2_v2.Infrastructure.DataAccess;
 using otus_dz2_v2.TelegramBot;
 using System.Numerics;
+using Telegram.Bot;
+using Telegram.Bot.Polling;
+using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+
 
 
 
@@ -69,75 +72,98 @@ namespace otus_dz2_v2
 
         private static void HandleUpdateCompleted(string message) => Console.WriteLine($"Закончилась обработка сообщения '{message}'.");
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
 
-            while (true)
+            try
             {
+                int maxTasks = SetMaxTasks();
+                int maxLengthNameTask = SetMaxLengthNameTasks();
+
+                string _botKey = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN", EnvironmentVariableTarget.User);
+                var botClient = new TelegramBotClient(_botKey);
+
+                IUserRepository userRepository = new InMemoryUserRepository();
+                IUserService userService = new UserService(userRepository);
+                IToDoRepository toDoRepository = new InMemoryToDoRepository();
+                IToDoService toDoService = new ToDoService(maxTasks, maxLengthNameTask, toDoRepository);
+
+                var handler = new UpdateHandler(botClient, userService, toDoService, toDoRepository);
+
+                void DisplayStartEventMessage(string message) => Console.WriteLine($"\r\nНачалась обработка сообщения {message}\r\n");
+                void DisplayCompleteEventMessage(string message) => Console.WriteLine($"Закончилась обработка сообщения {message}\r\n");
+
+                var receiverOptions = new ReceiverOptions
+                {
+                    AllowedUpdates = [UpdateType.Message],
+                    DropPendingUpdates = true
+                };
 
                 try
                 {
-                    int maxTasks = SetMaxTasks();
-                    int taskLength = SetMaxLengthNameTasks();
-
-
-                    var botClient = new ConsoleBotClient();
-                    IUserRepository userRepository = new InMemoryUserRepository();
-                    IUserService userService = new UserService(userRepository);
-                    IToDoRepository toDoRepository = new InMemoryToDoRepository();
-                    IToDoService toDoService = new ToDoService(maxTasks, taskLength, toDoRepository);
-                    var handler = new UpdateHandler(botClient, userService, toDoService, toDoRepository); // Обработчик обновлений
-
-                    handler.OnHandleUpdateStarted += HandleUpdateStarted;
-                    handler.OnHandleUpdateCompleted += HandleUpdateCompleted;
-
-                    // Создаем токен отмены
-                    var cts = new CancellationTokenSource();
-
-
-                    Console.CancelKeyPress += (_, _) =>
+                    using (CancellationTokenSource ct = new CancellationTokenSource())
                     {
-                        cts.Cancel();
-                        handler.OnHandleUpdateStarted -= HandleUpdateStarted;
-                        handler.OnHandleUpdateCompleted -= HandleUpdateCompleted;
-                        cts.Dispose();
-                    };
+                        var me = await botClient.GetMe();
+                        handler.OnHandleUpdateStarted += HandleUpdateStarted;
+                        handler.OnHandleUpdateCompleted += HandleUpdateCompleted;
 
 
-                    try
-                    {
-                        botClient.StartReceiving(handler, cts.Token);
+                        // команды для бота
+                        await botClient.SetMyCommands(new BotCommand[]
+                        {
+                            new BotCommand("/start", "Начало работы"),     // Стартовая команда
+                            new BotCommand("/help", "Справка по командам"),// Справочная команда
+                            new BotCommand("/info", "Информация о сервисе"),// Команда для вывода инфо о сервисе
+                            new BotCommand("/addtask", "Добавить задачу"), // Добавление новой задачи
+                            new BotCommand("/showtasks", "Просмотреть активные задачи"),// Просмотр текущих задач
+                            new BotCommand("/showalltasks", "Просмотреть все задачи"),// Просмотр всех задач
+                            new BotCommand("/removetask", "Удалить задачу"),// Удаление задачи
+                            new BotCommand("/completetask", "Завершить задачу"),// Завершение задачи
+                            new BotCommand("/report", "Получить отчет по задачам"),// Формирование отчета
+                            new BotCommand("/find", "Найти задачу по названию")// Поиск задачи по имени
+                        });
 
-                        Console.WriteLine("Бот запущен...");
+
+
+                        botClient.StartReceiving(handler, receiverOptions, ct.Token);
+
+                        Console.WriteLine("Нажмите английскую \"A\" для остановки бота.");
+                        var inputKey = Console.ReadKey();
+
+                        if (inputKey.Key == ConsoleKey.A)
+                        {
+                            ct.Cancel();
+                            throw new Exception($"\r\n{me.FirstName} остановлен!");
+                        }
+                        else
+                            Console.WriteLine($"\r\n{me.FirstName} запущен!");
+
+                        await Task.Delay(-1);
                     }
-                    finally
-                    {
-                        handler.OnHandleUpdateStarted -= HandleUpdateStarted;
-                        handler.OnHandleUpdateCompleted -= HandleUpdateCompleted;
-                    }
-
-                    cts.Cancel();
-
-                    break;
-                }
-
-                catch (ArgumentOutOfRangeException ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine(ex.Message);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Произошла непредвиденная ошибка", ex.Message);
+                    Console.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    handler.OnHandleUpdateStarted -= HandleUpdateStarted;
+                    handler.OnHandleUpdateCompleted -= HandleUpdateCompleted;
 
                 }
-
-
-
-
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(@"Произошла непредвиденная ошибка: {0} {1} {2} {3}", ex.GetType(), ex.Message,
+                    ex.StackTrace, ex.InnerException);
             }
         }
     }

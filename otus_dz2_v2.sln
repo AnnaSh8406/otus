@@ -4,11 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "otus_dz2_v2", "otus_dz2_v2\otus_dz2_v2.csproj", "{C8619B15-8763-42BE-91DF-3308CBECACC2}"
-	ProjectSection(ProjectDependencies) = postProject
-		{9DF96A2E-62CF-114B-017D-7CD1FE7D7223} = {9DF96A2E-62CF-114B-017D-7CD1FE7D7223}
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Otus.ToDoList.ConsoleBot", "Otus.ToDoList.ConsoleBot\Otus.ToDoList.ConsoleBot.csproj", "{9DF96A2E-62CF-114B-017D-7CD1FE7D7223}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,10 +15,6 @@ Global
 		{C8619B15-8763-42BE-91DF-3308CBECACC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8619B15-8763-42BE-91DF-3308CBECACC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8619B15-8763-42BE-91DF-3308CBECACC2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9DF96A2E-62CF-114B-017D-7CD1FE7D7223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9DF96A2E-62CF-114B-017D-7CD1FE7D7223}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9DF96A2E-62CF-114B-017D-7CD1FE7D7223}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9DF96A2E-62CF-114B-017D-7CD1FE7D7223}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
