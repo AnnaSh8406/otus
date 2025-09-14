@@ -20,7 +20,14 @@ namespace otus_dz2_v2.Core.Services
 
         public async Task<ToDoUser> RegisterUserAsync(long telegramUserId, string telegramUsername, CancellationToken cancellationToken)
         {
-            ToDoUser user = new ToDoUser(telegramUserId, telegramUsername);
+
+            var user = new ToDoUser
+            {
+                UserId = Guid.NewGuid(),
+                TelegramUserId = telegramUserId,
+                TelegramUserName = telegramUsername,
+                RegisteredAt = DateTime.UtcNow
+            };
             await userRep.AddAsync(user, cancellationToken);
             return user;
 
@@ -30,12 +37,8 @@ namespace otus_dz2_v2.Core.Services
         public async Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken)
         {
 
-
-            ToDoUser user = await userRep.GetUserByTelegramUserIdAsync(telegramUserId, cancellationToken);
-            if (user != null)
-                return user;
-
-            return null;
+ 
+            return await userRep.GetUserAsync(telegramUserId, cancellationToken);
         }
 
 

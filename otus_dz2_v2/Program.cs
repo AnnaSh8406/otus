@@ -82,10 +82,12 @@ namespace otus_dz2_v2
 
                 string _botKey = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN", EnvironmentVariableTarget.User);
                 var botClient = new TelegramBotClient(_botKey);
+                string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data");
+                Console.WriteLine($"Директория: {baseDir}");
 
-                IUserRepository userRepository = new InMemoryUserRepository();
+                IUserRepository userRepository = new FileUserRepository(baseDir);
                 IUserService userService = new UserService(userRepository);
-                IToDoRepository toDoRepository = new InMemoryToDoRepository();
+                IToDoRepository toDoRepository = new FileToDoRepository(baseDir);
                 IToDoService toDoService = new ToDoService(maxTasks, maxLengthNameTask, toDoRepository);
 
                 var handler = new UpdateHandler(botClient, userService, toDoService, toDoRepository);

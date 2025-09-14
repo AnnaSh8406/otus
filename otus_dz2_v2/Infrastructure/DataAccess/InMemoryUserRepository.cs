@@ -17,10 +17,10 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
     {
 
         private readonly List<ToDoUser> users = new List<ToDoUser>();
-        public async Task<ToDoUser?> GetUserAsync(Guid userId, CancellationToken cancellationToken)
+        public async Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken)
         {
 
-            return await Task.FromResult(users.FirstOrDefault(u => u.UserId == userId));
+            return await Task.FromResult(users.FirstOrDefault(u => u.TelegramUserId == telegramUserId));
         }
         public async Task<ToDoUser?> GetUserByTelegramUserIdAsync(long telegramUserId, CancellationToken cancellationToken)
         {

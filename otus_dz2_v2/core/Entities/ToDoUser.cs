@@ -8,16 +8,10 @@ namespace otus_dz2_v2.Core.Entities
 {
     public class ToDoUser
     {
-        public ToDoUser(long TelegramUserId, string TelegramUserName)
-        {
-            UserId = Guid.NewGuid();
-            RegisteredAt = DateTime.Now;
-            this.TelegramUserId = TelegramUserId;
-            this.TelegramUserName = TelegramUserName;
-        }
-        public Guid UserId { get; init; }
-        public long TelegramUserId { get; init; }
-        public string TelegramUserName { get; init; }
-        public DateTime RegisteredAt { get; init; }
+       
+        public Guid UserId { get; set; }
+        public long TelegramUserId { get; set; }
+        public string TelegramUserName { get; set; }
+        public DateTime RegisteredAt { get; set; }
     }
 }
