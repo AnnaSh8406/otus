@@ -36,7 +36,7 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
         {
             return await GetByGuid(id, cancellationToken);
         }
-          
+
         public async Task<IReadOnlyList<ToDoItem>> GetAllByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
             return await GetAllByUserId(userId, cancellationToken);
