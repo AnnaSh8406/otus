@@ -24,6 +24,7 @@ namespace otus_dz2_v2
             return new ReplyKeyboardMarkup(new[]
             {
 
+            new[] {new KeyboardButton("/addtask")},
             new[] {new KeyboardButton("/showalltasks")},
             new[] {new KeyboardButton("/showtasks")},
             new[] {new KeyboardButton("/report")}

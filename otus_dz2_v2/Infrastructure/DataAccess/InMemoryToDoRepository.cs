@@ -22,12 +22,12 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
         private readonly List<ToDoItem> tasks;
         public async Task<IReadOnlyList<ToDoItem>> GetAllByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(tasks.Where(x => x.User.UserId == userId).ToList());
+            return await Task.FromResult(tasks.Where(x => x.ToDoUser.UserId == userId).ToList());
         }
 
         public async Task<IReadOnlyList<ToDoItem>> GetActiveByUserIdAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return await Task.FromResult(tasks.Where(x => x.User.UserId == userId && x.State == ToDoItemState.Active).ToList());
+            return await Task.FromResult(tasks.Where(x => x.ToDoUser.UserId == userId && x.State == ToDoItemState.Active).ToList());
         }
 
         public async Task AddAsync(ToDoItem item, CancellationToken cancellationToken)
@@ -50,13 +50,13 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
         public async Task<bool> ExistsByNameAsync(Guid userId, string name, CancellationToken cancellationToken)
         {
 
-            return await Task.FromResult(tasks.Any(t => t.User.UserId == userId && t.Name == name));
+            return await Task.FromResult(tasks.Any(t => t.ToDoUser.UserId == userId && t.Name == name));
         }
 
         public async Task<int> CountActiveAsync(Guid userId, CancellationToken cancellationToken)
         {
 
-            return await Task.FromResult(tasks.Count(t => t.User.UserId == userId && t.State == ToDoItemState.Active));
+            return await Task.FromResult(tasks.Count(t => t.ToDoUser.UserId == userId && t.State == ToDoItemState.Active));
         }
         public async Task<IReadOnlyList<ToDoItem>> FindAsync(Guid userId, Func<ToDoItem, bool> predicate, CancellationToken cancellationToken)
         {

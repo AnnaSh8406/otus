@@ -42,23 +42,39 @@ namespace otus_dz2_v2.Core.Services
         }
 
 
-        public async Task<ToDoItem> AddAsync(ToDoUser? user, string name, CancellationToken cancellationToken)
+        public async Task<ToDoItem> AddAsync(ToDoUser? user, string name, DateTime deadline, CancellationToken cancellationToken)
         {
-            if ((await toDoRepository.CountActiveAsync(user.UserId, cancellationToken)) >= maxTasks)
-                throw new TaskCountLimitException(maxTasks);
+
 
             if (name.Length > taskLength)
-            {
                 throw new TaskLengthLimitException(name.Length);
-            }
 
-
-
-            if (await DublicateCheckAsync(name, user, cancellationToken))
+            if (await toDoRepository.ExistsByNameAsync(user.UserId, name, cancellationToken))
                 throw new DuplicateTaskException(name);
 
-            ToDoItem newItem = new ToDoItem(name, user);
-            toDoRepository.AddAsync(newItem, cancellationToken);
+            //if ((await toDoRepository.CountActiveAsync(user.UserId, cancellationToken)) >= maxTasks)
+            //     throw new TaskCountLimitException(maxTasks);
+            var tasks = await GetAllByUserIdAsync(user.UserId, cancellationToken);
+
+            if (tasks.Count >= maxTasks)
+            {
+                throw new TaskCountLimitException(maxTasks);
+            }
+
+            /* ToDoItem newItem = new ToDoItem(name, user);
+             toDoRepository.AddAsync(newItem, cancellationToken);
+             return newItem;
+            */
+            var newItem = new ToDoItem
+            {
+                Id = Guid.NewGuid(),
+                ToDoUser = user,
+                Name = name,
+                CreatedAt = DateTime.UtcNow,
+                State = ToDoItemState.Active,
+                Deadline = deadline // Задание срока выполнения
+            };
+            await toDoRepository.AddAsync(newItem, cancellationToken);
             return newItem;
         }
 
