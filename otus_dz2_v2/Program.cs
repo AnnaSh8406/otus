@@ -13,7 +13,6 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using otus_dz2_v2.Scenarios;
 
 
 
@@ -83,18 +82,15 @@ namespace otus_dz2_v2
 
                 string _botKey = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN", EnvironmentVariableTarget.User);
                 var botClient = new TelegramBotClient(_botKey);
-                string dataDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data");
-                Console.WriteLine($"Базовая директория данных: {dataDir}");
+                string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data");
+                Console.WriteLine($"Директория: {baseDir}");
 
-                IUserRepository userRepository = new FileUserRepository(dataDir);
+                IUserRepository userRepository = new FileUserRepository(baseDir);
                 IUserService userService = new UserService(userRepository);
-                IToDoRepository toDoRepository = new FileToDoRepository(dataDir);
+                IToDoRepository toDoRepository = new FileToDoRepository(baseDir);
                 IToDoService toDoService = new ToDoService(maxTasks, maxLengthNameTask, toDoRepository);
-                var toDoReportService = new ToDoReportService(toDoService);// Генерация отчетов по задачам
-                var contextRepository = new InMemoryScenarioContextRepository(); // создается экземпляр репозитория контекстов
 
-
-                var handler = new UpdateHandler(botClient, userService, toDoService, toDoRepository, toDoReportService, contextRepository);
+                var handler = new UpdateHandler(botClient, userService, toDoService, toDoRepository);
 
                 void DisplayStartEventMessage(string message) => Console.WriteLine($"\r\nНачалась обработка сообщения {message}\r\n");
                 void DisplayCompleteEventMessage(string message) => Console.WriteLine($"Закончилась обработка сообщения {message}\r\n");
