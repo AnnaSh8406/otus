@@ -9,6 +9,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using otus_dz2_v2.Core.DataAccess;
 using otus_dz2_v2.Core.Entities;
+using otus_dz2_v2.Infrastructure.DataAccess;
 
 namespace otus_dz2_v2.Core.Services
 {
@@ -16,11 +17,15 @@ namespace otus_dz2_v2.Core.Services
     public class UserService : IUserService
     {
 
-        private readonly IUserRepository userRep;
+        private readonly IUserRepository _userRepository;
+
+        public UserService()
+        {
+            _userRepository = new FileUserRepository(Keyboard.dataDir);
+        }
 
         public async Task<ToDoUser> RegisterUserAsync(long telegramUserId, string telegramUsername, CancellationToken cancellationToken)
         {
-
             var user = new ToDoUser
             {
                 UserId = Guid.NewGuid(),
@@ -28,24 +33,25 @@ namespace otus_dz2_v2.Core.Services
                 TelegramUserName = telegramUsername,
                 RegisteredAt = DateTime.UtcNow
             };
-            await userRep.AddAsync(user, cancellationToken);
-            return user;
 
+            await _userRepository.AddAsync(user, cancellationToken);
+            return user;
         }
 
 
         public async Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken)
         {
 
- 
-            return await userRep.GetUserAsync(telegramUserId, cancellationToken);
+
+            /*  ToDoUser user = await userRep.GetUserByTelegramUserIdAsync(telegramUserId, cancellationToken);
+              if (user != null)
+                  return user;
+
+              return null; */
+            return await _userRepository.GetUserAsync(telegramUserId, cancellationToken);
         }
 
 
-        public UserService(IUserRepository userRep)
-        {
-            this.userRep = userRep;
-        }
 
     }
 

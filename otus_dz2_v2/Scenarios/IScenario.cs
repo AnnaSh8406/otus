@@ -11,6 +11,6 @@ namespace otus_dz2_v2.Scenarios
     public interface IScenario
     {
         bool CanHandle(ScenarioType scenario);
-        Task<ScenarioResult> HandleMessageAsync(ITelegramBotClient bot, ScenarioContext context, Update update, CancellationToken ct);
+        Task<ScenarioResult> HandleMessageAsync(ITelegramBotClient bot, ScenarioContext context, Update update, CancellationToken cancellationToken);
     }
 }

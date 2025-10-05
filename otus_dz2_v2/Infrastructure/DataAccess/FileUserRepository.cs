@@ -2,26 +2,35 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
 using otus_dz2_v2.Core.DataAccess;
 using otus_dz2_v2.Core.Entities;
+using System.Text.Json;
+using System.Threading;
 
 namespace otus_dz2_v2.Infrastructure.DataAccess
 {
+
     public class FileUserRepository : IUserRepository
     {
-        private readonly string _baseDirect;
+        private readonly string _baseDirectory;
 
-        public FileUserRepository(string baseDirect)
+        public FileUserRepository(string baseDirectory)
         {
-            if (!Directory.Exists(baseDirect))
+            if (!Directory.Exists(baseDirectory))
             {
-                Directory.CreateDirectory(baseDirect);
+                Directory.CreateDirectory(baseDirectory);
             }
-            _baseDirect = baseDirect;
+            _baseDirectory = baseDirectory;
         }
 
+
+
+        public async Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken)
+        {
+            return await GetUserByTelegramUserId(telegramUserId);
+        }
 
         public async Task AddAsync(ToDoUser user, CancellationToken cancellationToken)
         {
@@ -29,15 +38,12 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
         }
 
 
-        public async Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken)
-        {
-            return await GetUserByTelegramUserId(telegramUserId,cancellationToken);
-        }
 
-        
-        private async Task<IEnumerable<ToDoUser>> GetAllToFile()
+
+
+        private async Task<IEnumerable<ToDoUser>> GetAll()
         {
-            return Directory.EnumerateFiles(_baseDirect)
+            return Directory.EnumerateFiles(_baseDirectory)
                 .Where(file => Path.GetExtension(file) == ".json")
                 .Select(file =>
                 {
@@ -54,20 +60,20 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
                 .Where(user => user != null);
         }
 
-                               
-        private async Task<ToDoUser?> GetUserByTelegramUserId(long telegramUserId, CancellationToken cancellationToken)
+        private async Task<ToDoUser?> GetUser(Guid userId)
         {
-            return (await GetAllToFile()).FirstOrDefault(user => user.TelegramUserId == telegramUserId);
+            return (await GetAll()).FirstOrDefault(user => user.UserId == userId);
+        }
+
+        private async Task<ToDoUser?> GetUserByTelegramUserId(long telegramUserId)
+        {
+            return (await GetAll()).FirstOrDefault(user => user.TelegramUserId == telegramUserId);
         }
 
         private async Task Add(ToDoUser user)
         {
-            var filePath = Path.Combine(_baseDirect, $"{user.UserId}.json");
+            var filePath = Path.Combine(_baseDirectory, $"{user.UserId}.json");
             await File.WriteAllTextAsync(filePath, JsonSerializer.Serialize(user, new JsonSerializerOptions { WriteIndented = true }));
-        }
-        private async Task<ToDoUser?> GetUser(Guid userId)
-        {
-            return (await GetAllToFile()).FirstOrDefault(user => user.UserId == userId);
         }
 
 

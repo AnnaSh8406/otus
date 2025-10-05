@@ -17,24 +17,25 @@ namespace otus_dz2_v2.Core.Entities
 
     {
 
-
         public Guid Id { get; init; }
-        public ToDoUser ToDoUser { get; set; }
-        public string Name { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public ToDoUser User { get; init; }
+        public string Name { get; init; }
+        public DateTime CreatedAt { get; init; }
         public ToDoItemState State { get; set; }
-        public DateTime? StartChangeAt { get; set; }
+        public DateTime? StateChangedAt { get; set; }
         public DateTime Deadline { get; set; }
+        public ToDoList? List { get; init; }
 
-        /*  public ToDoItem(string Name, ToDoUser User)
-          {
-              State = ToDoItemState.Active;
-              CreatedAt = DateTime.Now;
-              Id = Guid.NewGuid(); 
-              this.Name = Name;
-              this.User = User;
-
-              //Deadline = deadline // Задание срока выполнения
-          }*/
+        public ToDoItem(ToDoUser user, string name, DateTime deadline, ToDoList? list)
+        {
+            Id = Guid.NewGuid();
+            CreatedAt = DateTime.UtcNow;
+            State = ToDoItemState.Active;
+            User = user;
+            Name = name;
+            Deadline = deadline;
+            List = list;
+        }
+        public ToDoItem() { }
     }
 }

@@ -21,7 +21,7 @@ using otus_dz2_v2.Scenarios;
 namespace otus_dz2_v2
 {
 
-    public class Program
+    internal class Program
     {
         public static int maxTasks;
         public static int maxTaskLenght;
@@ -68,109 +68,118 @@ namespace otus_dz2_v2
                 throw new ArgumentException("Введеная строка пустая");
 
         }
-
-        private static void HandleUpdateStarted(string message) => Console.WriteLine($"Началась обработка сообщения '{message}'.");
-
-        private static void HandleUpdateCompleted(string message) => Console.WriteLine($"Закончилась обработка сообщения '{message}'.");
-
-        static async Task Main(string[] args)
+        static async Task Main()
         {
+            Console.WriteLine("Введите максимально допустимое количество задач");
+            var taskCountLimit = UpdateHandler.ParseAndValidateInt(Console.ReadLine(), 1, 100);
+
+            Console.WriteLine("Введите максимально допустимую длину задачи");
+            var taskLengthLimit = UpdateHandler.ParseAndValidateInt(Console.ReadLine(), 1, 100);
+
+            string token = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN", EnvironmentVariableTarget.User) ?? "";
+            var botClient = new TelegramBotClient(token);
+            var receiverOptions = new ReceiverOptions
+            {
+                AllowedUpdates = [UpdateType.Message, UpdateType.CallbackQuery],
+                DropPendingUpdates = true,
+
+            };
+            var ping = await botClient.GetMe();
+
+
+            var toDoRepository = new FileToDoRepository(Keyboard.dataDir);
+
+            var cts = new CancellationTokenSource();
+            var userService = new UserService();
+            var toDoService = new ToDoService(taskCountLimit, taskLengthLimit, toDoRepository);
+            var toDoListService = new ToDoListService();
+
+            var scenarioList = new List<IScenario>();
+            scenarioList.Add(new AddTaskScenario(userService, toDoService, toDoListService));
+            scenarioList.Add(new AddListScenario(userService, toDoListService));
+            scenarioList.Add(new DeleteListScenario(userService, toDoListService, toDoService));
+            scenarioList.Add(new DeleteTaskScenario(userService, toDoService));
+
+            var handler = new UpdateHandler(userService, botClient, toDoService,
+                                            new ToDoReportService(toDoRepository), scenarioList, new InMemoryScenarioContextRepository(), new ToDoListService());
 
             try
             {
-                int maxTasks = SetMaxTasks();
-                int maxLengthNameTask = SetMaxLengthNameTasks();
 
-                string _botKey = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN", EnvironmentVariableTarget.User);
-                var botClient = new TelegramBotClient(_botKey);
-                string dataDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "data");
-                Console.WriteLine($"Базовая директория данных: {dataDir}");
+                handler.SubscribeOnUpdateStarted(UpdateStarted);
+                handler.SubscribeOnUpdateCompleted(UpdateCompleted);
 
-                IUserRepository userRepository = new FileUserRepository(dataDir);
-                IUserService userService = new UserService(userRepository);
-                IToDoRepository toDoRepository = new FileToDoRepository(dataDir);
-                IToDoService toDoService = new ToDoService(maxTasks, maxLengthNameTask, toDoRepository);
-                var toDoReportService = new ToDoReportService(toDoService);// Генерация отчетов по задачам
-                var contextRepository = new InMemoryScenarioContextRepository(); // создается экземпляр репозитория контекстов
-
-
-                var handler = new UpdateHandler(botClient, userService, toDoService, toDoRepository, toDoReportService, contextRepository);
-
-                void DisplayStartEventMessage(string message) => Console.WriteLine($"\r\nНачалась обработка сообщения {message}\r\n");
-                void DisplayCompleteEventMessage(string message) => Console.WriteLine($"Закончилась обработка сообщения {message}\r\n");
-
-                var receiverOptions = new ReceiverOptions
+                await botClient.SetMyCommands(
+                new[]
                 {
-                    AllowedUpdates = [UpdateType.Message],
-                    DropPendingUpdates = true
-                };
+                    new BotCommand { Command = "start", Description = "Запуск бота" },
+                    new BotCommand { Command = "help", Description = "Описание комманд" },
+                    new BotCommand { Command = "show", Description = "Список задач" },
+                    new BotCommand { Command = "report", Description = "Статистика по задачам" },
+                }, cancellationToken: cts.Token
+              );
 
-                try
+                botClient.StartReceiving(handler, receiverOptions, cancellationToken: cts.Token);
+                Console.WriteLine("Нажмите английскую \"A\" для остановки бота.");
+                var keyPressTask = Task.Run(() => KeyPress(botClient, cts.Token));
+
+                await Task.WhenAny(keyPressTask);
+                if (keyPressTask.IsCompleted)
                 {
-                    using (CancellationTokenSource ct = new CancellationTokenSource())
-                    {
-                        var me = await botClient.GetMe();
-                        handler.OnHandleUpdateStarted += HandleUpdateStarted;
-                        handler.OnHandleUpdateCompleted += HandleUpdateCompleted;
-
-
-                        // команды для бота
-                        await botClient.SetMyCommands(new BotCommand[]
-                        {
-                            new BotCommand("/start", "Начало работы"),     // Стартовая команда
-                            new BotCommand("/help", "Справка по командам"),// Справочная команда
-                            new BotCommand("/info", "Информация о сервисе"),// Команда для вывода инфо о сервисе
-                            new BotCommand("/addtask", "Добавить задачу"), // Добавление новой задачи
-                            new BotCommand("/showtasks", "Просмотреть активные задачи"),// Просмотр текущих задач
-                            new BotCommand("/showalltasks", "Просмотреть все задачи"),// Просмотр всех задач
-                            new BotCommand("/removetask", "Удалить задачу"),// Удаление задачи
-                            new BotCommand("/completetask", "Завершить задачу"),// Завершение задачи
-                            new BotCommand("/report", "Получить отчет по задачам"),// Формирование отчета
-                            new BotCommand("/find", "Найти задачу по названию")// Поиск задачи по имени
-                        });
-
-
-
-                        botClient.StartReceiving(handler, receiverOptions, ct.Token);
-
-                        Console.WriteLine("Нажмите английскую \"A\" для остановки бота.");
-                        var inputKey = Console.ReadKey();
-
-                        if (inputKey.Key == ConsoleKey.A)
-                        {
-                            ct.Cancel();
-                            throw new Exception($"\r\n{me.FirstName} остановлен!");
-                        }
-                        else
-                            Console.WriteLine($"\r\n{me.FirstName} запущен!");
-
-                        await Task.Delay(-1);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                finally
-                {
-                    handler.OnHandleUpdateStarted -= HandleUpdateStarted;
-                    handler.OnHandleUpdateCompleted -= HandleUpdateCompleted;
-
+                    cts.Cancel();
+                    Console.WriteLine("\nЗавершение работы бота...");
                 }
             }
-            catch (ArgumentOutOfRangeException ex)
+            catch (OperationCanceledException e)
             {
-                Console.WriteLine(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine(ex.Message);
+                ShowError("Бот остановлен");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(@"Произошла непредвиденная ошибка: {0} {1} {2} {3}", ex.GetType(), ex.Message,
-                    ex.StackTrace, ex.InnerException);
+                ShowError($"Произошла непредвиденная ошибка:{ex.GetType()}\n{ex.Message}\n{ex.StackTrace}\n{ex.InnerException}");
+            }
+            finally
+            {
+                handler.UnSubscribeOnUpdateStarted(UpdateStarted);
+                handler.UnSubscribeOnUpdateCompleted(UpdateCompleted);
             }
         }
+
+        private async static Task KeyPress(TelegramBotClient bot, CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                var key = Console.ReadKey();
+                if (key.Key == ConsoleKey.A)
+                {
+                    return;
+                }
+                else
+                {
+
+                    var me = await bot.GetMe();
+                    Console.WriteLine($"\nИнформация о боте: @{me.Username}, ID: {me.Id}");
+                    Console.WriteLine("Нажмите клавишу A для выхода");
+                }
+                await Task.Delay(100);
+            }
+        }
+        private static void ShowError(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        private static void UpdateStarted(string message)
+        {
+            Console.WriteLine($"Началась обработка сообщения {message}");
+        }
+
+        private static void UpdateCompleted(string message)
+        {
+            Console.WriteLine($"Закончилась обработка сообщения {message}");
+        }
     }
+
 }

@@ -26,8 +26,8 @@ namespace otus_dz2_v2.Core.Services
             this.taskLength = taskLength;
         }
 
-        private readonly int maxTasks;
-        private readonly int taskLength;
+        public readonly int maxTasks;
+        public readonly int taskLength;
         private readonly IToDoRepository toDoRepository;
 
 
@@ -42,7 +42,7 @@ namespace otus_dz2_v2.Core.Services
         }
 
 
-        public async Task<ToDoItem> AddAsync(ToDoUser? user, string name, DateTime deadline, CancellationToken cancellationToken)
+        public async Task<ToDoItem> AddAsync(ToDoUser? user, string name, DateTime deadline, ToDoList? list, CancellationToken cancellationToken)
         {
 
 
@@ -52,8 +52,6 @@ namespace otus_dz2_v2.Core.Services
             if (await toDoRepository.ExistsByNameAsync(user.UserId, name, cancellationToken))
                 throw new DuplicateTaskException(name);
 
-            //if ((await toDoRepository.CountActiveAsync(user.UserId, cancellationToken)) >= maxTasks)
-            //     throw new TaskCountLimitException(maxTasks);
             var tasks = await GetAllByUserIdAsync(user.UserId, cancellationToken);
 
             if (tasks.Count >= maxTasks)
@@ -61,19 +59,7 @@ namespace otus_dz2_v2.Core.Services
                 throw new TaskCountLimitException(maxTasks);
             }
 
-            /* ToDoItem newItem = new ToDoItem(name, user);
-             toDoRepository.AddAsync(newItem, cancellationToken);
-             return newItem;
-            */
-            var newItem = new ToDoItem
-            {
-                Id = Guid.NewGuid(),
-                ToDoUser = user,
-                Name = name,
-                CreatedAt = DateTime.UtcNow,
-                State = ToDoItemState.Active,
-                Deadline = deadline // Задание срока выполнения
-            };
+            var newItem = new ToDoItem(user, name, deadline, list);
             await toDoRepository.AddAsync(newItem, cancellationToken);
             return newItem;
         }
@@ -81,13 +67,11 @@ namespace otus_dz2_v2.Core.Services
 
         public async Task MarkCompletedAsync(Guid id, CancellationToken cancellationToken)
         {
-            var tasks = await toDoRepository.GetAsync(id, cancellationToken);
-            if (tasks != null)
+            var toDoItem = await toDoRepository.GetAsync(id, cancellationToken);
+            if (toDoItem != null)
             {
-                tasks.State = ToDoItemState.Completed;
-                await toDoRepository.UpdateAsync(tasks, cancellationToken);
+                toDoRepository.Update(toDoItem);
             }
-
         }
 
 
@@ -109,5 +93,16 @@ namespace otus_dz2_v2.Core.Services
             return await toDoRepository.ExistsByNameAsync(user.UserId, name, cancellationToken);
         }
 
+
+        public async Task<IReadOnlyList<ToDoItem>> GetByUserIdAndListAsync(Guid userId, Guid? listId, CancellationToken cancellationToken)
+        {
+            return await Task.Run(() => toDoRepository.GetByUserIdAndList(userId, listId, cancellationToken));
+        }
+
+        public async Task<ToDoItem?> Get(Guid toDoItemId, CancellationToken cancellationToken)
+        {
+            return await toDoRepository.GetAsync(toDoItemId, cancellationToken);
+
+        }
     }
 }

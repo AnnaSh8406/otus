@@ -10,18 +10,18 @@ namespace otus_dz2_v2.Scenarios
     {
         private readonly Dictionary<long, ScenarioContext> _contexts = new();
 
-        public Task<ScenarioContext?> GetContext(long userId, CancellationToken ct)
+        public Task<ScenarioContext?> GetContext(long userId, CancellationToken cancellationToken)
         {
             return Task.FromResult(_contexts.TryGetValue(userId, out var ctx) ? ctx : null);
         }
 
-        public Task SetContext(long userId, ScenarioContext context, CancellationToken ct)
+        public Task SetContext(long userId, ScenarioContext context, CancellationToken cancellationToken)
         {
             _contexts[userId] = context;
             return Task.CompletedTask;
         }
 
-        public Task ResetContext(long userId, CancellationToken ct)
+        public Task ResetContext(long userId, CancellationToken cancellationToken)
         {
             _contexts.Remove(userId);
             return Task.CompletedTask;
