@@ -42,27 +42,36 @@ namespace otus_dz2_v2.Core.Services
         }
 
 
-        public async Task<ToDoItem> AddAsync(ToDoUser? user, string name, DateTime deadline, ToDoList? list, CancellationToken cancellationToken)
+
+        public async Task<ToDoItem> AddAsync(ToDoUser user, string toDoItemName, DateTime date, ToDoList? list, CancellationToken cancellationToken)
         {
+            Keyboard.ValidateString(toDoItemName);
 
+            if (await  toDoRepository.CountActiveAsync(user.UserId, cancellationToken) >= maxTasks)
+                throw new TaskLengthLimitException(maxTasks);
 
-            if (name.Length > taskLength)
-                throw new TaskLengthLimitException(name.Length);
+            if (toDoItemName.Length > taskLength)
+                throw new TaskLengthLimitException(toDoItemName.Length);
 
-            if (await toDoRepository.ExistsByNameAsync(user.UserId, name, cancellationToken))
-                throw new DuplicateTaskException(name);
-
-            var tasks = await GetAllByUserIdAsync(user.UserId, cancellationToken);
-
-            if (tasks.Count >= maxTasks)
+            if (await toDoRepository.ExistsByNameAsync(user.UserId, toDoItemName, cancellationToken))
             {
-                throw new TaskCountLimitException(maxTasks);
+                throw new DuplicateTaskException(toDoItemName);
             }
+            var newToDoItem = new ToDoItem()
+            {
+                Id = Guid.NewGuid(),
+                CreatedAt = DateTime.UtcNow,
+                State = ToDoItemState.Active,
+                User = user,
+                Name = toDoItemName,
+                Date = date,
+                List = list
+            };
 
-            var newItem = new ToDoItem(user, name, deadline, list);
-            await toDoRepository.AddAsync(newItem, cancellationToken);
-            return newItem;
+            await  toDoRepository.AddAsync(newToDoItem, cancellationToken);
+            return newToDoItem;
         }
+
 
 
         public async Task MarkCompletedAsync(Guid id, CancellationToken cancellationToken)

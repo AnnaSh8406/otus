@@ -10,6 +10,9 @@ using Telegram.Bot.Types.Enums;
 using otus_dz2_v2.Core.DataAccess;
 using otus_dz2_v2.Core.Entities;
 using otus_dz2_v2.Infrastructure.DataAccess;
+using otus_dz2_v2.Infrastructure.DataAccessDb.Repositories;
+using LinqToDB.Remote;
+using otus_dz2_v2.Infrastructure.DataAccessDb;
 
 namespace otus_dz2_v2.Core.Services
 {
@@ -21,7 +24,7 @@ namespace otus_dz2_v2.Core.Services
 
         public UserService()
         {
-            _userRepository = new FileUserRepository(Keyboard.dataDir);
+            _userRepository = new SqlUserRepository(new DataContextFactory());
         }
 
         public async Task<ToDoUser> RegisterUserAsync(long telegramUserId, string telegramUsername, CancellationToken cancellationToken)
@@ -38,17 +41,9 @@ namespace otus_dz2_v2.Core.Services
             return user;
         }
 
-
         public async Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken)
         {
-
-
-            /*  ToDoUser user = await userRep.GetUserByTelegramUserIdAsync(telegramUserId, cancellationToken);
-              if (user != null)
-                  return user;
-
-              return null; */
-            return await _userRepository.GetUserAsync(telegramUserId, cancellationToken);
+            return await Task.Run(() => _userRepository.GetUserByTelegramUserIdAsync(telegramUserId, cancellationToken));
         }
 
 
