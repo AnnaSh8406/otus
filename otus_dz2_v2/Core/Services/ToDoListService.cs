@@ -30,7 +30,7 @@ namespace otus_dz2_v2.Core.Services
                 throw new ArgumentException($"Список с таким названием уже существует");
             }
 
-            var toDoList = new ToDoList(user, name);
+            var toDoList = new ToDoList() { Id = Guid.NewGuid(), User = user, Name = name, CreatedAt = DateTime.UtcNow };
             await _toDoListRepository.Add(toDoList, cancellationToken);
             return toDoList;
         }

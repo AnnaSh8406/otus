@@ -196,12 +196,12 @@ namespace otus_dz2_v2.TelegramBot
                                 }
                             });
 
-                            await _botClient.SendMessage(update.CallbackQuery.Message.Chat, $"{toDoItem.Name}:\n Срок выполнения {toDoItem.Deadline}\n Время создания {toDoItem.CreatedAt}", cancellationToken: cancellationToken, replyMarkup: replyKeyboardMarkup);
+                            await _botClient.SendMessage(update.CallbackQuery.Message.Chat, $"{toDoItem.Name}:\n Срок выполнения {toDoItem.Date}\n Время создания {toDoItem.CreatedAt}", cancellationToken: cancellationToken, replyMarkup: replyKeyboardMarkup);
                         }
 
                         if ((toDoItem.State == ToDoItemState.Completed))
                         {
-                            await _botClient.SendMessage(update.CallbackQuery.Message.Chat, $"{toDoItem.Name}:\n Срок выполнения {toDoItem.Deadline}\n Время создания {toDoItem.CreatedAt}\n Время выполнения {toDoItem.StateChangedAt}", cancellationToken: cancellationToken);
+                            await _botClient.SendMessage(update.CallbackQuery.Message.Chat, $"{toDoItem.Name}:\n Срок выполнения {toDoItem.Date}\n Время создания {toDoItem.CreatedAt}\n Время выполнения {toDoItem.StateChangedAt}", cancellationToken: cancellationToken);
                         }
                     }
                     break;

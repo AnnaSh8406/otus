@@ -12,7 +12,9 @@ namespace otus_dz2_v2
     {
 
 
-        public static readonly string dataDir = Path.Combine("C:", "TgBot");
+        public static readonly string dataDir = Path.Combine("C:", "TgBot"); 
+        public static readonly string CONNECTION_STRING = "Host=localhost;Port=5432;Database=ToDoListDb;Username=postgres;Password=84Chloe84;";
+
         public static ReplyKeyboardMarkup GetKeyboardButtons(bool userRegistered)
         {
             if (userRegistered)

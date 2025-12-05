@@ -11,7 +11,8 @@ namespace otus_dz2_v2.Core.DataAccess
     public interface IUserRepository
     {
 
-        Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken);
-        Task AddAsync(ToDoUser user, CancellationToken cancellationToken);
+        Task<ToDoUser?> GetUserAsync(Guid userId, CancellationToken ct);
+        Task<ToDoUser?> GetUserByTelegramUserIdAsync(long telegramUserId, CancellationToken ct);
+        Task AddAsync(ToDoUser user, CancellationToken ct);
     }
 }

@@ -14,68 +14,55 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
 
     public class FileUserRepository : IUserRepository
     {
-        private readonly string _baseDirectory;
-
-        public FileUserRepository(string baseDirectory)
+        private readonly string _directoryName;
+        public FileUserRepository(string baseDirectoryName)
         {
-            if (!Directory.Exists(baseDirectory))
+            _directoryName = Path.Combine(baseDirectoryName, "ToDoUsers");
+            if (!Directory.Exists(_directoryName))
             {
-                Directory.CreateDirectory(baseDirectory);
+                Directory.CreateDirectory(_directoryName);
             }
-            _baseDirectory = baseDirectory;
         }
-
-
-
-        public async Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken)
-        {
-            return await GetUserByTelegramUserId(telegramUserId);
-        }
-
         public async Task AddAsync(ToDoUser user, CancellationToken cancellationToken)
         {
-            await Add(user);
+            if (await GetUserByTelegramUserIdAsync(user.TelegramUserId, cancellationToken) == null)
+            {
+                string fileName = Path.Combine(_directoryName, $"{user.UserId}.json");
+                using var createStream = File.Create(fileName);
+                await JsonSerializer.SerializeAsync(createStream, user, cancellationToken: cancellationToken);
+            }
         }
 
-
-
-
-
-        private async Task<IEnumerable<ToDoUser>> GetAll()
+        public async Task<ToDoUser?> GetUserAsync(Guid userId, CancellationToken cancellationToken)
         {
-            return Directory.EnumerateFiles(_baseDirectory)
-                .Where(file => Path.GetExtension(file) == ".json")
-                .Select(file =>
+            var toDoUsers = await GetAllUsersAsync(cancellationToken);
+            return await Task.Run(() => toDoUsers.Where(x => x.UserId == userId).FirstOrDefault());
+        }
+
+        public async Task<ToDoUser?> GetUserByTelegramUserIdAsync(long telegramUserId, CancellationToken cancellationToken)
+        {
+            var toDoUsers = await GetAllUsersAsync(cancellationToken);
+            return await Task.Run(() => toDoUsers.Where(x => x.TelegramUserId == telegramUserId).FirstOrDefault(), cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<ToDoUser>> GetAllUsersAsync(CancellationToken cancellationToken)
+        {
+            var userList = new List<ToDoUser>();
+
+            if (Directory.Exists(_directoryName))
+            {
+                var userFiles = Directory.EnumerateFiles(_directoryName);
+                foreach (var file in userFiles)
                 {
-                    try
+                    using var reader = File.OpenRead(file);
+                    var toDoUser = await JsonSerializer.DeserializeAsync<ToDoUser>(reader, cancellationToken: cancellationToken);
+                    if (toDoUser != null)
                     {
-                        return JsonSerializer.Deserialize<ToDoUser>(File.ReadAllText(file));
+                        userList.Add(toDoUser);
                     }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Ошибка при обработке файла {file}: {ex.Message}");
-                        return null;
-                    }
-                })
-                .Where(user => user != null);
+                }
+            }
+            return userList;
         }
-
-        private async Task<ToDoUser?> GetUser(Guid userId)
-        {
-            return (await GetAll()).FirstOrDefault(user => user.UserId == userId);
-        }
-
-        private async Task<ToDoUser?> GetUserByTelegramUserId(long telegramUserId)
-        {
-            return (await GetAll()).FirstOrDefault(user => user.TelegramUserId == telegramUserId);
-        }
-
-        private async Task Add(ToDoUser user)
-        {
-            var filePath = Path.Combine(_baseDirectory, $"{user.UserId}.json");
-            await File.WriteAllTextAsync(filePath, JsonSerializer.Serialize(user, new JsonSerializerOptions { WriteIndented = true }));
-        }
-
-
     }
 }

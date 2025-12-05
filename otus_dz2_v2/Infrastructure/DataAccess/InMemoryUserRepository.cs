@@ -34,9 +34,9 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
             await Task.Run(() => users.Add(user), cancellationToken);
         }
 
-        public Task<ToDoUser?> GetUserAsync(ToDoUser user, CancellationToken cancellationToken)
+        public async Task<ToDoUser?> GetUserAsync(Guid userId, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => users.Where(x => x.UserId == userId).FirstOrDefault());
         }
     }
 }
