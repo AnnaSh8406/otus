@@ -13,6 +13,7 @@ using otus_dz2_v2.Core.Services;
 using otus_dz2_v2.Scenarios;
 using otus_dz2_v2.TelegramBot;
 using otus_dz2_v2.Core.Services;
+using otus_dz2_v2.Core.BackgroundTasks;
 
 
 
@@ -54,9 +55,11 @@ namespace otus_dz2_v2
                 scenarioList.Add(new DeleteTaskScenario(userService, toDoService));
 
                 var scenarioRepository = new InMemoryScenarioContextRepository();
+                 var taskRunner = new BackgroundTaskRunner();
+                 taskRunner.AddTask(new ResetScenarioBackgroundTask(TimeSpan.FromHours(1), scenarioRepository, botClient));
+                 taskRunner.StartTasks(cts.Token);
 
-
-                var handler = new UpdateHandler(userService, botClient, toDoService,
+            var handler = new UpdateHandler(userService, botClient, toDoService,
                                                 new ToDoReportService(toDoRepository), scenarioList, scenarioRepository, new ToDoListService());
 
                 try
@@ -72,7 +75,7 @@ namespace otus_dz2_v2
                     new BotCommand { Command = "show", Description = "Список задач" },
                     new BotCommand { Command = "report", Description = "Отчет" },
                     }, cancellationToken: cts.Token
-                  );
+                    );
 
                     botClient.StartReceiving(handler, receiverOptions, cancellationToken: cts.Token);
 
@@ -81,7 +84,7 @@ namespace otus_dz2_v2
                     await Task.WhenAny(keyPressTask);
                     if (keyPressTask.IsCompleted)
                     {
-                     
+                        await taskRunner.StopTasks(cts.Token);
                         cts.Cancel();
                         Console.WriteLine("\nЗавершение работы бота...");
                     }

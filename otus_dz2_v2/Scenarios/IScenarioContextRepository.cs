@@ -11,5 +11,7 @@ namespace otus_dz2_v2.Scenarios
         Task<ScenarioContext?> GetContext(long userId, CancellationToken cancellationToken);
         Task SetContext(long userId, ScenarioContext context, CancellationToken cancellationToken);
         Task ResetContext(long userId, CancellationToken cancellationToken);
+
+        Task<IReadOnlyList<ScenarioContext>> GetContexts(CancellationToken cancellationToken);
     }
 }
