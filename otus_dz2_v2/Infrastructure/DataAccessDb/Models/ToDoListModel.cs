@@ -20,9 +20,10 @@ namespace otus_dz2_v2.Infrastructure.DataAccessDb.Models
         public DateTime CreatedAt { get; set; }      
 
         [Column("User_Id"), NotNull]
-        public Guid UserId { get; set; }           
 
-        [Association(ThisKey = nameof(UserId), OtherKey = nameof(ToDoUserModel.UserId))]
-        public ToDoUserModel User { get; set; }          
+        public Guid UserId { get; set; }
+
+        [Association(ThisKey = nameof(Id), OtherKey = nameof(ToDoItemModel.ListId))]
+        public List<ToDoItemModel> ToDoItems { get; set; } = [];
     }
 }

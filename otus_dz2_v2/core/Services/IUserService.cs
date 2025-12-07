@@ -15,8 +15,9 @@ namespace otus_dz2_v2.Core.Services
 
     public interface IUserService
     {
+        Task<ToDoUser> RegisterUserAsync(long telegramUserId, string telegramUserName, long ChatId, CancellationToken cancellationToken);
         Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken);
-        Task<ToDoUser> RegisterUserAsync(long telegramUserId, string telegramUsername, CancellationToken cancellationToken);
+        Task<ToDoUser?> GetUserByIdAsync(Guid userId, CancellationToken cancellationToken);
     }
 
 

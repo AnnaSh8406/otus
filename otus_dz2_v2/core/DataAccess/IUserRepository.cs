@@ -8,11 +8,11 @@ using otus_dz2_v2.Core.Services;
 
 namespace otus_dz2_v2.Core.DataAccess
 {
-    public interface IUserRepository
+    interface IUserRepository
     {
-
-        Task<ToDoUser?> GetUserAsync(Guid userId, CancellationToken ct);
-        Task<ToDoUser?> GetUserByTelegramUserIdAsync(long telegramUserId, CancellationToken ct);
-        Task AddAsync(ToDoUser user, CancellationToken ct);
+        Task<ToDoUser?> GetUserAsync(Guid userId, CancellationToken cancellationTokent);
+        Task<ToDoUser?> GetUserByTelegramUserIdAsync(long telegramUserId, CancellationToken cancellationToken);
+        Task AddAsync(ToDoUser user, CancellationToken cancellationToken);
+        Task<IReadOnlyList<ToDoUser>> GetUsers(CancellationToken cancellationToken);
     }
 }

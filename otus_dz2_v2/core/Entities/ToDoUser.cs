@@ -21,6 +21,8 @@ namespace otus_dz2_v2.Core.Entities
         }
         public ToDoUser() { }
 
+        public long ChatId { get; set; }
+
 
     }
 }

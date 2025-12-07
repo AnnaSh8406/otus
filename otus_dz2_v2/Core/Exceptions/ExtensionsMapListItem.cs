@@ -8,7 +8,7 @@ using otus_dz2_v2.Infrastructure.DataAccessDb.Models;
 using otus_dz2_v2.Infrastructure.DataAccessDb;
 
 namespace otus_dz2_v2.Core.Exceptions
-{
+{/*
     public static class ExtensionsMapper
     {
         public static List<ToDoItem> MapListItems(this List<ToDoItemModel> toDoItemModels)
@@ -40,5 +40,5 @@ namespace otus_dz2_v2.Core.Exceptions
             }
             return items;
         }
-    }
+    }*/
 }
