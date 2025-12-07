@@ -79,5 +79,10 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
             return await Task.Run(() => tasks.Where(x => x.User.UserId == userId && x.List.Id == listId).ToList());
         }
 
+        public Task<IReadOnlyList<ToDoItem>> GetActiveWithDeadline(Guid userId, DateTime from, DateTime to, CancellationToken ct)
+        {
+                        throw new NotImplementedException();
+        }
+
     }
 }

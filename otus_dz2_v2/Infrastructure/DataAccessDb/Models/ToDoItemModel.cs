@@ -34,11 +34,6 @@ namespace otus_dz2_v2.Infrastructure.DataAccessDb.Models
         [Column("list_id")]
         public Guid? ListId { get; set; }                       
 
-
-        [Association(ThisKey = nameof(ListId), OtherKey = nameof(ToDoListModel.Id))]
-        public ToDoListModel? List { get; set; }                    
-
-        [Association(ThisKey = nameof(UserId), OtherKey = nameof(ToDoUserModel.UserId))]
-        public ToDoUserModel User { get; set; }                    
+             
     }
 }

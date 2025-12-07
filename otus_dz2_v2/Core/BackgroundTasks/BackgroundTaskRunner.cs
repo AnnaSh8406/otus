@@ -36,7 +36,7 @@ namespace otus_dz2_v2.Core.BackgroundTasks
 
             _stoppingCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
 
-            // Отдельная обёртка для логирования и корректной обработки отмены
+            
             static async Task RunSafe(IBackgroundTask task, CancellationToken ct)
             {
                 try
@@ -45,7 +45,7 @@ namespace otus_dz2_v2.Core.BackgroundTasks
                 }
                 catch (OperationCanceledException) when (ct.IsCancellationRequested)
                 {
-                    // нормально завершаемся при отмене
+                    // 
                 }
                 catch (Exception ex)
                 {
@@ -53,7 +53,7 @@ namespace otus_dz2_v2.Core.BackgroundTasks
                 }
             }
 
-            // Собираем все таски в один
+            
             _runningTasks = Task.WhenAll(_tasks.Select(t => RunSafe(t, _stoppingCts.Token)));
         }
 

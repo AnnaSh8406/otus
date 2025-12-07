@@ -42,23 +42,31 @@ namespace otus_dz2_v2
 
                 Console.WriteLine($"Запуск бота - {ping.FirstName} {ping.Username}");
 
-                var toDoRepository = new SqlToDoRepository(new DataContextFactory());
-                var cts = new CancellationTokenSource();
-                var userService = new UserService();
-                var toDoService = new ToDoService(taskCountLimit, taskLengthLimit, toDoRepository);
-                var toDoListService = new ToDoListService();
+            var cts = new CancellationTokenSource();
 
-                var scenarioList = new List<IScenario>();
-                scenarioList.Add(new AddTaskScenario(userService, toDoService, toDoListService));
-                scenarioList.Add(new AddListScenario(userService, toDoListService));
-                scenarioList.Add(new DeleteListScenario(userService, toDoListService, toDoService));
-                scenarioList.Add(new DeleteTaskScenario(userService, toDoService));
+            var toDoRepository = new SqlToDoRepository(new DataContextFactory());
+            var userRepository = new SqlUserRepository(new DataContextFactory());
 
-                var scenarioRepository = new InMemoryScenarioContextRepository();
-                 var taskRunner = new BackgroundTaskRunner();
-                 taskRunner.AddTask(new ResetScenarioBackgroundTask(TimeSpan.FromHours(1), scenarioRepository, botClient));
-                 taskRunner.StartTasks(cts.Token);
+            var userService = new UserService(userRepository);
+            var toDoService = new ToDoService(taskCountLimit, taskLengthLimit, toDoRepository);
+            var toDoListService = new ToDoListService();
 
+            var scenarioList = new List<IScenario>();
+            scenarioList.Add(new AddTaskScenario(userService, toDoService, toDoListService));
+            scenarioList.Add(new AddListScenario(userService, toDoListService));
+            scenarioList.Add(new DeleteListScenario(userService, toDoListService, toDoService));
+            scenarioList.Add(new DeleteTaskScenario(userService, toDoService));
+
+            var scenarioRepository = new InMemoryScenarioContextRepository();
+
+            var taskRunner = new BackgroundTaskRunner();
+            var notificationService = new NotificationService(new DataContextFactory());
+
+            taskRunner.AddTask(new ResetScenarioBackgroundTask(TimeSpan.FromHours(1), scenarioRepository, botClient));
+            taskRunner.AddTask(new NotificationBackgroundTask(notificationService, userService, botClient));
+            taskRunner.AddTask(new DeadlineBackgroundTask(notificationService, userRepository, toDoRepository));
+            taskRunner.AddTask(new TodayBackgroundTask(notificationService, userRepository, toDoRepository));
+            taskRunner.StartTasks(cts.Token);
             var handler = new UpdateHandler(userService, botClient, toDoService,
                                                 new ToDoReportService(toDoRepository), scenarioList, scenarioRepository, new ToDoListService());
 

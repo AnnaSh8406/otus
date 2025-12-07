@@ -13,30 +13,36 @@ using otus_dz2_v2.Core.Services;
 
 namespace otus_dz2_v2.Infrastructure.DataAccess
 {
-    public class InMemoryUserRepository : IUserRepository
-    {
+  
 
-        private readonly List<ToDoUser> users = new List<ToDoUser>();
-        public async Task<ToDoUser?> GetUserAsync(long telegramUserId, CancellationToken cancellationToken)
+        internal class InMemoryUserRepository : IUserRepository
         {
+            private List<ToDoUser> _toDoUsers;
+            public InMemoryUserRepository()
+            {
+                _toDoUsers = new List<ToDoUser>();
+            }
+            public async Task AddAsync(ToDoUser user, CancellationToken ct)
+            {
+                if (await GetUserByTelegramUserIdAsync(user.TelegramUserId, ct) == null)
+                {
+                    await Task.Run(() => _toDoUsers.Add(user));
+                }
+            }
 
-            return await Task.FromResult(users.FirstOrDefault(u => u.TelegramUserId == telegramUserId));
-        }
-        public async Task<ToDoUser?> GetUserByTelegramUserIdAsync(long telegramUserId, CancellationToken cancellationToken)
-        {
+            public async Task<ToDoUser?> GetUserAsync(Guid userId, CancellationToken ct)
+            {
+                return await Task.Run(() => _toDoUsers.Where(x => x.UserId == userId).FirstOrDefault());
+            }
 
-            return await Task.FromResult(users.FirstOrDefault(u => u.TelegramUserId == telegramUserId));
-        }
+            public async Task<ToDoUser?> GetUserByTelegramUserIdAsync(long telegramUserId, CancellationToken ct)
+            {
+                return await Task.Run(() => _toDoUsers.Where(x => x.TelegramUserId == telegramUserId).FirstOrDefault(), ct);
+            }
 
-
-        public async Task AddAsync(ToDoUser user, CancellationToken cancellationToken)
-        {
-            await Task.Run(() => users.Add(user), cancellationToken);
-        }
-
-        public async Task<ToDoUser?> GetUserAsync(Guid userId, CancellationToken ct)
-        {
-            return await Task.Run(() => users.Where(x => x.UserId == userId).FirstOrDefault());
+            public Task<IReadOnlyList<ToDoUser>> GetUsers(CancellationToken ct)
+            {
+                              throw new NotImplementedException();
+            }
         }
     }
-}

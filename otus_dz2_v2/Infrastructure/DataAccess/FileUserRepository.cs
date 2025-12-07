@@ -64,5 +64,10 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
             }
             return userList;
         }
+
+        public Task<IReadOnlyList<ToDoUser>> GetUsers(CancellationToken cancellationToken)
+        {
+                        throw new NotImplementedException();
+        }
     }
 }

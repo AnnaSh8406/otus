@@ -203,5 +203,11 @@ namespace otus_dz2_v2.Infrastructure.DataAccess
             }
         }
 
+        public Task<IReadOnlyList<ToDoItem>> GetActiveWithDeadline(Guid userId, DateTime from, DateTime to, CancellationToken ct)
+        {
+                         
+            throw new NotImplementedException();
+        }
+
     }
 }

@@ -8,28 +8,28 @@ namespace otus_dz2_v2.Core.BackgroundTasks
 {
     public abstract class BackgroundTask(TimeSpan delay, string name) : IBackgroundTask
     {
-        protected abstract Task Execute(CancellationToken ct);
+        protected abstract Task Execute(CancellationToken cancellationToken);
 
-        public async Task Start(CancellationToken ct)
+        public async Task Start(CancellationToken cancellationToken)
         {
-            while (!ct.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
                     Console.WriteLine($"{name}. Execute");
-                    await Execute(ct);
+                    await Execute(cancellationToken);
 
                     Console.WriteLine($"{name}. Start delay {delay}");
-                    await Task.Delay(delay, ct);
+                    await Task.Delay(delay, cancellationToken);
                 }
-                catch (OperationCanceledException) when (ct.IsCancellationRequested)
+                catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
                 {
-                    // нормально завершаемся при отмене
+                    // 
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"{name}. Error: {ex}");
-                    await Task.Delay(TimeSpan.FromSeconds(1), ct);
+                    await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
                 }
             }
         }

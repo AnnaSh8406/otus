@@ -320,7 +320,7 @@ namespace otus_dz2_v2.TelegramBot
         {
             var _toDoUser = await _userService.GetUserAsync(botUpdate.Message.From.Id, cancellationToken);
             if (_toDoUser == null)
-                _toDoUser = await _userService.RegisterUserAsync(botUpdate.Message.From.Id, botUpdate.Message.From.Username, cancellationToken);
+                _toDoUser = await _userService.RegisterUserAsync(botUpdate.Message.From.Id, botUpdate.Message.From.Username, botUpdate.Message.Chat.Id, cancellationToken);
 
             await _botClient.SendMessage(botUpdate.Message.Chat, $"Привет, {_toDoUser.TelegramUserName}. Вы зарегистрированы!", cancellationToken: cancellationToken, replyMarkup: Keyboard.GetKeyboardButtons(true));
         }
